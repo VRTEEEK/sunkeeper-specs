@@ -1,0 +1,52 @@
+- !<AssetImportMetadata/573a816c-e266-4330-adb8-a7da3a35b3f2>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 4e776673-93c2-4b5f-954e-d0851d797d34
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 4e776673-93c2-4b5f-954e-d0851d797d34
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 6754ed3c-3822-4f71-8478-cb8b25645d3e
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/6754ed3c-3822-4f71-8478-cb8b25645d3e>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: fb51ea1e-2d20-4930-a564-7cb0510e7377
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    emissive: false
+    targetNames: false
+    temple: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - temple: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      emissive: !<Vec3> {x: 0.140000, y: 0.110000, z: 0.070000}
+      targetNames: "Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty"
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject temple
+    - '// @input vec3 emissive = "{0.14, 0.11, 0.07}"'
+    - '// @input string targetNames = "Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty"'
