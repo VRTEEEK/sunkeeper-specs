@@ -1,0 +1,420 @@
+- !<AssetImportMetadata/8afd65d4-e5ab-47e7-b3aa-5fe26517138c>
+  ImportedAssetIds:
+    .hidden/InteriorSandstone: !<reference> 4f840189-9a06-48a2-9e6a-cf30232fc30e
+    0272a8cb830947fc: !<reference> 30a24073-7cd2-4353-9e5f-c47ac51507e9
+    0c44aa6cc34e8404: !<reference> 789e31aa-1e78-48ca-8f63-060865cbea41
+    1d13fc3bf3477494: !<reference> ab887b14-0964-45e1-b3f1-09a509e1469f
+    22d8f4949e8fdf9b: !<reference> 14a2333e-5006-41f3-bee5-851d96e5617c
+    25b51c64e2d9cd98: !<reference> 361aa349-80fc-466c-9142-807d0492b50b
+    26ba073d67b9d0dd: !<reference> 8cb86408-7149-4d70-bd6a-d3812bebc1bb
+    285f38781cddfc70: !<reference> f5bf6510-2ac3-4bbe-abdc-09716cb42056
+    469f7410c3f2357f: !<reference> 94e62ca0-9f24-4ebe-9ed6-818cc7f4e88f
+    47cbd8cb18fca176: !<reference> 9637ff02-a27f-4d3c-8090-8ef96f89c208
+    65552f4b09963300: !<reference> 3b4d7302-1d6c-46dc-91cf-1b94b094bf08
+    657c264db4d38ac9: !<reference> 8c1b1345-c7ca-4cda-8984-c29a7ce3b2b8
+    667e653274486bac: !<reference> 0983d965-57a3-48bb-a22f-694f9e0df8f7
+    734cfba0e9b8d58a: !<reference> 9ce06c09-5016-4f03-bb6c-24782bed0d09
+    88ab437fd121cc69: !<reference> 6c8f99c2-d3b2-46b6-b12f-7ee070115521
+    901dcdd00b60d238: !<reference> ea42a784-69c2-478d-b406-32a9f914047d
+    953eb331a95eaa92: !<reference> 439707ba-b763-46fd-bb68-7e4f5abefd0c
+    Materials/InteriorSandstone: !<reference> 246ebecb-5d77-4487-bdc9-b6f35e4779ab
+    Materials/InteriorSandstone|InteriorSandstone|GraphPassInfo: !<reference> a25491c8-5049-4fa8-8a28-770547ca9e6c
+    Materials/Statue_AmunRa: !<reference> 04b8ee6b-7067-45dd-998f-5d1adecc1c8b
+    Materials/Statue_AmunRa|Statue_AmunRa|GraphPassInfo: !<reference> 383b6747-0862-4558-bccf-ea3188339492
+    Materials/Statue_Ptah: !<reference> ac41e0bc-825a-49a9-ab09-229ec6837fd7
+    Materials/Statue_Ptah|Statue_Ptah|GraphPassInfo: !<reference> c8cf5e10-e6f3-43f5-9d23-206fd2eaa4e1
+    Materials/Statue_RaHorakhty: !<reference> 3f02b6eb-5c11-4e23-858e-6c995781aa61
+    Materials/Statue_RaHorakhty|Statue_RaHorakhty|GraphPassInfo: !<reference> 2d729a79-1be4-43e2-92a1-83e263b4f431
+    Materials/Statue_Ramesses: !<reference> daaab5bc-6bc7-43b8-a544-7b32c9437c73
+    Materials/Statue_Ramesses|Statue_Ramesses|GraphPassInfo: !<reference> 2d2d75d9-7704-4f5b-b44f-06fec662cbb5
+    Materials/mat0: !<reference> 41ae1908-235e-4f8b-a4c5-f5dbe39f4bad
+    Materials/mat0|mat0|GraphPassInfo: !<reference> 98972eb4-d2dc-4470-bec9-d5c36de95fb6
+    Meshes/Facade: !<reference> 9a706e46-f148-4cce-a224-032e5464b57d
+    Meshes/Facade1: !<reference> 11148c23-d2fe-4b3e-a193-77f25a7420e9
+    Meshes/Interior_Pillars: !<reference> 60f5b98c-7146-4aad-9fe7-1bcbe5648ffd
+    Meshes/Interior_Shell: !<reference> 3386ef0d-86c3-47f4-9015-ea530238d7e8
+    Meshes/Statue_AmunRa: !<reference> e4e48045-cee5-47b1-9d2f-741283180d22
+    Meshes/Statue_Ptah: !<reference> 510688b9-dfab-4ec2-b89c-ae8744031b18
+    Meshes/Statue_RaHorakhty: !<reference> 0cd46160-5ce6-4346-a1f0-e3c157167f52
+    Meshes/Statue_Ramesses: !<reference> 0734f038-4882-416a-8bab-e0c9887c8930
+    Scene: !<reference> b54eedcd-b3e5-4370-9ce7-c481de761178
+    Textures/InteriorSandstone: !<reference> 221391c2-027e-4487-b4b7-07e683383b57
+    Textures/InteriorSandstone1: !<reference> 3d763f0a-1262-4aaf-82e9-9b1dccfa1b4e
+    Textures/InteriorSandstone2: !<reference> b303a106-2c65-40f1-a74a-91eecf0dca09
+    Textures/InteriorSandstone3: !<reference> 236e1027-8e94-4492-bb15-d333c66c486d
+    Textures/InteriorSandstone4: !<reference> 433173ad-fda0-4ab3-ba50-3966d2a59fcb
+    Textures/Temple_BaseColor: !<reference> e607a12f-2e12-4617-83fb-8d7946ca345d
+    Textures/Temple_Normal: !<reference> 42b334d7-f169-4bd1-a2b5-aa13b72d0ba6
+    Textures/Temple_Roughness: !<reference> f5f0230b-76e9-4196-9b62-6ca503b1082a
+    b4528b8859d1fb70: !<reference> 31eafbd7-3264-4ba8-839b-aad887a4e49a
+    c9ebae41e68c802a: !<reference> 9b39b28d-cf88-4ddf-b9c1-bad69a45b46d
+    e229b752f75d7495: !<reference> af025acd-ecf6-4f26-a0fc-b58ccef48368
+    fb486e955478fff5: !<reference> 1896bfb8-47e6-4ee6-85f5-ae9b1a647024
+  ImporterName: GltfImporter
+  PrimaryAsset: !<reference> b54eedcd-b3e5-4370-9ce7-c481de761178
+  PackageType: LegacyPackage
+  LegacyPackagePolicy: CanBeUnpackedTransparent
+  ExtraData:
+    {}
+  AssetDataMap:
+    Scene: !<own> 4e25c8c2-242b-4e8d-b222-ac0ebfd4d534
+  DependentFiles:
+    []
+  ImporterSettings: !<GltfImporterSettings>
+    UseLegacyImporter: false
+    WithMaterials: true
+    NamingConvention: ByCategorySanitizeV2
+    PersistentIdGenerationAlgorithm: DescriptorBasedV2
+    AnimationCurveOptimization: true
+    CustomAnimationSamplingRate: 30.000000
+    ImportVertexColor: true
+    ImportTangents: true
+    ImportMorphTargetAnimation: true
+    ConvertMetersToCentimeters: true
+    RegenerateTangents: false
+    OptimizeMesh: true
+  CompressionSettings: !<ComplexCompressionSettings>
+    Presets:
+      None Compression: !<FileCompressionSettings>
+        {}
+      Performance Compression: !<PerformanceCompressionSettings>
+        Level: Medium
+        Mipmap: false
+    ExtensionMappings:
+      mesh: None Compression
+      png: Performance Compression
+      jpg: Performance Compression
+    Overrides:
+      {}
+- !<RenderMeshVisual/0983d965-57a3-48bb-5dd0-96b061f20708>
+  PrefabRemaps:
+    []
+  Name: Statue_Ramesses
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> daaab5bc-6bc7-43b8-a544-7b32c9437c73
+  Mesh: !<reference> 0734f038-4882-416a-8bab-e0c9887c8930
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<RenderMeshVisual/14a2333e-5006-41f3-411a-7ae2691a9e83>
+  PrefabRemaps:
+    []
+  Name: Interior_Shell
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 246ebecb-5d77-4487-bdc9-b6f35e4779ab
+  Mesh: !<reference> 3386ef0d-86c3-47f4-9015-ea530238d7e8
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<SceneObject/1896bfb8-47e6-4ee6-7a0a-5164e59b8fdb>
+  PrefabRemaps:
+    []
+  Name: Materials
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    []
+- !<SceneObject/30a24073-7cd2-4353-61a0-3b853aeaf816>
+  PrefabRemaps:
+    []
+  Name: Statue_Ptah
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> f5bf6510-2ac3-4bbe-5423-f68e934bdfa9
+- !<SceneObject/31eafbd7-3264-4ba8-7c64-5527785b1b65>
+  PrefabRemaps:
+    []
+  Name: Root
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 90.000000, y: -0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 3b4d7302-1d6c-46dc-6e30-e46b4f6b40f7
+    - !<own> 1896bfb8-47e6-4ee6-7a0a-5164e59b8fdb
+  Components:
+    []
+- !<RenderMeshVisual/361aa349-80fc-466c-6ebd-7f82fb6d4af4>
+  PrefabRemaps:
+    []
+  Name: Statue_RaHorakhty
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 3f02b6eb-5c11-4e23-858e-6c995781aa61
+  Mesh: !<reference> 0cd46160-5ce6-4346-a1f0-e3c157167f52
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<SceneObject/3b4d7302-1d6c-46dc-6e30-e46b4f6b40f7>
+  PrefabRemaps:
+    []
+  Name: Facade
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: -90.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> ea42a784-69c2-478d-4bf9-cd5606ebfb82
+- !<RenderMeshVisual/439707ba-b763-46fd-4497-81b0a54102f3>
+  PrefabRemaps:
+    []
+  Name: Statue_AmunRa
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 04b8ee6b-7067-45dd-998f-5d1adecc1c8b
+  Mesh: !<reference> e4e48045-cee5-47b1-9d2f-741283180d22
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<ObjectPrefabAssetData/4e25c8c2-242b-4e8d-b222-ac0ebfd4d534>
+  Prototype: !<ObjectOwner/93b1ba54-850e-46df-975a-01721ea8a637>
+    PackagePath: ""
+    objects:
+      - !<own> 8cb86408-7149-4d70-4295-2c7ed4143e44
+- !<SceneObject/6c8f99c2-d3b2-46b6-4ed0-811f8feeaade>
+  PrefabRemaps:
+    []
+  Name: Scenes
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 8c1b1345-c7ca-4cda-767b-3d65831c4d47
+  Components:
+    []
+- !<RenderMeshVisual/789e31aa-1e78-48ca-709c-f9f79a3415be>
+  PrefabRemaps:
+    []
+  Name: Interior_Pillars
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 246ebecb-5d77-4487-bdc9-b6f35e4779ab
+  Mesh: !<reference> 60f5b98c-7146-4aad-9fe7-1bcbe5648ffd
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<SceneObject/8c1b1345-c7ca-4cda-767b-3d65831c4d47>
+  PrefabRemaps:
+    []
+  Name: Scene
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> ab887b14-0964-45e1-4c0e-f65af61eb960
+    - !<own> af025acd-ecf6-4f26-5f03-4a73310b7c97
+    - !<own> 31eafbd7-3264-4ba8-7c64-5527785b1b65
+    - !<own> 9637ff02-a27f-4d3c-7f6f-710690763df7
+    - !<own> 30a24073-7cd2-4353-61a0-3b853aeaf816
+    - !<own> 9b39b28d-cf88-4ddf-463e-452965ba4b92
+    - !<own> 9ce06c09-5016-4f03-4493-db87d412f2f6
+  Components:
+    []
+- !<SceneObject/8cb86408-7149-4d70-4295-2c7ed4143e44>
+  PrefabRemaps:
+    []
+  Name: Temple
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 100.000000, y: 100.000000, z: 100.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 6c8f99c2-d3b2-46b6-4ed0-811f8feeaade
+  Components:
+    []
+- !<SceneObject/9637ff02-a27f-4d3c-7f6f-710690763df7>
+  PrefabRemaps:
+    []
+  Name: Statue_AmunRa
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 439707ba-b763-46fd-4497-81b0a54102f3
+- !<SceneObject/9b39b28d-cf88-4ddf-463e-452965ba4b92>
+  PrefabRemaps:
+    []
+  Name: Statue_RaHorakhty
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 361aa349-80fc-466c-6ebd-7f82fb6d4af4
+- !<SceneObject/9ce06c09-5016-4f03-4493-db87d412f2f6>
+  PrefabRemaps:
+    []
+  Name: Statue_Ramesses
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 0983d965-57a3-48bb-5dd0-96b061f20708
+- !<SceneObject/ab887b14-0964-45e1-4c0e-f65af61eb960>
+  PrefabRemaps:
+    []
+  Name: Interior_Pillars
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 789e31aa-1e78-48ca-709c-f9f79a3415be
+- !<SceneObject/af025acd-ecf6-4f26-5f03-4a73310b7c97>
+  PrefabRemaps:
+    []
+  Name: Interior_Shell
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 14a2333e-5006-41f3-411a-7ae2691a9e83
+- !<RenderMeshVisual/ea42a784-69c2-478d-4bf9-cd5606ebfb82>
+  PrefabRemaps:
+    []
+  Name: Facade
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 41ae1908-235e-4f8b-a4c5-f5dbe39f4bad
+  Mesh: !<reference> 9a706e46-f148-4cce-a224-032e5464b57d
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<RenderMeshVisual/f5bf6510-2ac3-4bbe-5423-f68e934bdfa9>
+  PrefabRemaps:
+    []
+  Name: Statue_Ptah
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> ac41e0bc-825a-49a9-ab09-229ec6837fd7
+  Mesh: !<reference> 510688b9-dfab-4ec2-b89c-ae8744031b18
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}

@@ -41,3 +41,12 @@ Keep the Meshy façade block (colossi, broken second colossus, niche figure); de
 - Triangles: Facade 459,266, Interior_Pillars 432, Interior_Shell 180, Statue_AmunRa 60, Statue_Ptah 60, Statue_RaHorakhty 60, Statue_Ramesses 60. Model size 1.93 × 0.94 × 0.62 m before scaling.
 - Renders: hybrid_front, hybrid_top, hybrid_three_quarter(_other_side), hybrid_interior_closeup, hybrid_sanctuary_closeup, hybrid_top_beam_path, hybrid_beam_three_quarter.
 - Not yet done: decimation, texture resize, scaling to 55 cm, GLB export (step A.6).
+
+## Export results (step A.6, `03_optimise_export.py`)
+- Culled never-visible façade faces: 3,624 (underside 2,672, back face under the interior walls 552, buried backface hits 517).
+- Two-pass decimation: unprotected rock/walls 264,349 → 39,956 triangles; colossi, fallen pieces and niche figure 190,808 → 55,247. Total 96,055 triangles including the 852 of the interior. Before/after close-up: `colossi_before_after.png`.
+- Textures: base colour 2048² JPEG, normal 2048² PNG (kept), roughness 2048² (packed by the exporter into the metallic-roughness texture, metallic factor 0), metallic map dropped (it was flat). Interior 512² PNG.
+- Scale 0.40485 → model 78.0 cm long (Z, toward the viewer), 37.9 cm wide, 25.0 cm tall. Origin at the base centre; façade faces +Z (glTF), i.e. the viewer's start position in Lens Studio. Units: metres in the file (Lens Studio applies its usual ×100 to centimetres on import; verify in Step B).
+- Doorway in the final frame: 2.1 cm wide, sill 1.7 cm and top 6.6 cm above the base, façade wall plane at z = +23.6 cm from the origin. Beam start for Step B: (0, ~4.1 cm, +23.6 cm) travelling toward −Z.
+- Statue centres (x, y, z in cm, final frame): Statue_Ptah (-2.6, 4.3, -35.1); Statue_AmunRa (-0.8, 4.3, -35.1); Statue_Ramesses (1.0, 4.3, -35.1); Statue_RaHorakhty (2.8, 4.3, -35.1) (left to right from the entrance = −X to +X).
+- GLB: `Assets/Temple/Temple.glb`, 10.81 MB, objects Facade, Interior_Pillars, Interior_Shell, Statue_AmunRa, Statue_Ptah, Statue_RaHorakhty, Statue_Ramesses; each statue has its own material. Re-import check total 96,055 triangles.
