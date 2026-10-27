@@ -354,7 +354,7 @@ render("hybrid_top", (C.x, C.y, hi[2] + 2), (C.x, C.y, C.z), ortho=L * 1.06)
 render("hybrid_three_quarter", (lo[0] - L * 0.7, lo[1] - L * 0.7, hi[2] + L * 0.6), (C.x, C.y, C.z))
 render("hybrid_three_quarter_other_side", (lo[0] - L * 0.7, hi[1] + L * 0.7, hi[2] + L * 0.6), (C.x, C.y, C.z))
 render("hybrid_interior_closeup", (x0 + 0.25, cy - 0.70, sill + 0.80), (x0 + 0.75, cy, sill + 0.05), lens=40)
-render("hybrid_sanctuary_closeup", (x0 + 1.06, cy - 0.12, sill + 0.40), (STATUE_X, cy, sill + 0.05), lens=40)
+render("hybrid_sanctuary_closeup", (x0 + 1.17, cy + 0.02, sill + 0.30), (STATUE_X, cy, sill + 0.05), lens=35)
 beam.hide_render = False
 render("hybrid_top_beam_path", (C.x, C.y, hi[2] + 2), (C.x, C.y, C.z), ortho=L * 1.06)
 render("hybrid_beam_three_quarter", (lo[0] - L * 0.5, lo[1] - L * 0.6, hi[2] + L * 0.5), (C.x + 0.1, C.y, C.z))
