@@ -35,3 +35,5 @@ PluginsUserPreferences/
 .DS_Store
 .virtual-scene.json
 .virtual-scene.runtime.json
+# Source assets (original 51 MB Meshy USDZ); only the optimised export is committed
+assets_src/

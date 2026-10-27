@@ -1,0 +1,152 @@
+{
+ "source": "/Users/mo/src/Sunkeeper/assets_src/temple/Meshy_AI_abu_simbel_cutaway_ul_1027081830_image-to-3d-texture.usdz",
+ "axes": "X length, Y depth, Z height (Blender Z-up)",
+ "objects": [
+  {
+   "name": "mesh1",
+   "mesh": "mesh1",
+   "vertices": 515793,
+   "triangles": 960470,
+   "polygons": 960470,
+   "materials": [
+    "mat0"
+   ],
+   "matrix_world_scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "bbox_min": [
+    -0.9522,
+    -0.4676,
+    -0.3167
+   ],
+   "bbox_max": [
+    0.9514,
+    0.4678,
+    0.3004
+   ]
+  }
+ ],
+ "materials": [
+  {
+   "name": "mat0",
+   "textures": [
+    {
+     "image": "extracted_image_0.jpg",
+     "feeds": [
+      "Base Color@Principled BSDF"
+     ]
+    },
+    {
+     "image": "extracted_image_1.jpg_metallic.png",
+     "feeds": [
+      "Color@Separate Color"
+     ]
+    },
+    {
+     "image": "extracted_image_1.jpg_roughness.png",
+     "feeds": [
+      "Color@Separate Color.001"
+     ]
+    },
+    {
+     "image": "extracted_image_2.jpg",
+     "feeds": [
+      "Color@Normal Map"
+     ]
+    }
+   ]
+  }
+ ],
+ "images": [
+  {
+   "name": "extracted_image_0.jpg",
+   "size": [
+    4096,
+    4096
+   ],
+   "filepath": "/var/folders/t_/x35yltgs4bgdhnbb_v7b7f2w0000gn/T/blender_9rwgCl/usd_textures_tmp/extracted_image_0.jpg",
+   "packed": true,
+   "channels": 4
+  },
+  {
+   "name": "extracted_image_1.jpg_metallic.png",
+   "size": [
+    2048,
+    2048
+   ],
+   "filepath": "/var/folders/t_/x35yltgs4bgdhnbb_v7b7f2w0000gn/T/blender_9rwgCl/usd_textures_tmp/extracted_image_1.jpg_metallic.png",
+   "packed": true,
+   "channels": 4
+  },
+  {
+   "name": "extracted_image_1.jpg_roughness.png",
+   "size": [
+    2048,
+    2048
+   ],
+   "filepath": "/var/folders/t_/x35yltgs4bgdhnbb_v7b7f2w0000gn/T/blender_9rwgCl/usd_textures_tmp/extracted_image_1.jpg_roughness.png",
+   "packed": true,
+   "channels": 4
+  },
+  {
+   "name": "extracted_image_2.jpg",
+   "size": [
+    4096,
+    4096
+   ],
+   "filepath": "/var/folders/t_/x35yltgs4bgdhnbb_v7b7f2w0000gn/T/blender_9rwgCl/usd_textures_tmp/extracted_image_2.jpg",
+   "packed": true,
+   "channels": 4
+  }
+ ],
+ "bbox_min": [
+  -0.9522,
+  -0.4676,
+  -0.3167
+ ],
+ "bbox_max": [
+  0.9514,
+  0.4678,
+  0.3004
+ ],
+ "size_m_xyz": [
+  1.9037,
+  0.9355,
+  0.6171
+ ],
+ "los_max_reach_m": 1.602,
+ "los_best_ray": {
+  "z_above_floor": 0.01,
+  "y": -0.308,
+  "reach": 1.602
+ },
+ "deep_ray_y_range": [
+  -0.328,
+  -0.308
+ ],
+ "deep_ray_height_range_above_floor": [
+  0.01,
+  0.01
+ ],
+ "doorway": {
+  "y_range": [
+   -0.448,
+   0.452
+  ],
+  "y_centre": 0.002,
+  "height_above_floor_range": [
+   0.03,
+   0.23
+  ],
+  "ray_reach_median_m": 0.27,
+  "ray_reach_max_m": 0.455,
+  "ray_stop_x_median": -0.682,
+  "ray_stop_x_max": -0.497
+ },
+ "interior_y_range_rows": [
+  -0.468,
+  -0.048
+ ]
+}

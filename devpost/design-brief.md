@@ -2,6 +2,8 @@
 status: approved
 ---
 
+> **Change log.** 27 Oct 2026: temple asset switched from primitive blocks to Mo's Meshy AI model (see "Temple model" under Where things live, and the README Credits).
+
 # Design brief: SUNKEEPER — The Secret of Abu Simbel
 
 <!-- Filled in by plan-lens from the learner's interview. Use the learner's words. Mark any value they didn't choose as (default). -->
@@ -25,7 +27,7 @@ You walk around a tabletop-scale, cut-away model of the Great Temple of Ramesses
 ## Where things live
 - Where the user is looking during the main task: down and slightly ahead at the temple, from arm's length to about two metres away. During the alignment they look along the temple's axis from the front, bending to get low. During the revelation they stand back up and look down into the open roof.
 - Plinth: a simple block 70 cm × 50 cm top, top surface 95 cm above the floor (default: museum display-case height, so the "low" alignment needs a slight bend, not a crouch), anchored in the room 120 cm in front of the viewer's start position (default), front edge facing the viewer.
-- Temple model: on the plinth, about 50 cm long from façade to sanctuary back wall, 30 cm wide, with the colossi façade about 25 cm tall (roughly 1:120 of the real temple; default). The façade faces the viewer's start position (this stands for east: the real façade faces the sunrise over the Nile). Stylised low-poly blocks, warm sandstone material.
+- Temple model: on the plinth, about 50 cm long from façade to sanctuary back wall, 30 cm wide, with the colossi façade about 25 cm tall (roughly 1:120 of the real temple; default). The façade faces the viewer's start position (this stands for east: the real façade faces the sunrise over the Nile). Model: Mo's own Meshy AI image-to-3D model (`assets_src/temple/…usdz`, generated 27 Oct 2026), cleaned up, axis-checked, optimised (about 60k–100k triangles, 2048 px textures) and exported from Blender via scripts in `tools/blender/`. Warm sandstone look kept; textures must stay light for the additive display. (Changed 27 Oct 2026: this replaces the earlier "stylised low-poly blocks" plan; the primitive build from milestone 3 is superseded.)
 - Cut-away: the **roof** is removed along the whole axis and the side walls are lowered to about half height (default), so a standing viewer looking down sees the full interior path: entrance → great hall with eight Osiride pillars (four each side) → smaller second hall with four pillars → vestibule → sanctuary. The façade itself stays intact so the low front view reads as the real temple front. (Learner offered "roof or one side wall"; the roof is chosen because the viewer looks down at a table.)
 - Sanctuary: exactly four seated statues on the back wall, each a separate object about 3 cm tall, left to right as seen from the entrance: Ptah, Amun-Ra, Ramesses II (deified), Ra-Horakhty. Each can be lit independently.
 - Façade: four seated colossi of Ramesses II; the second from the left is broken, its upper body lying on the ground in front, as it is today. Above the entrance, a niche figure of Ra-Horakhty.
