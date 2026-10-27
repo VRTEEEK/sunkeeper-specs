@@ -13,9 +13,9 @@ metaInfo:
     []
   tags:
     []
-  lensName: SpecsBaseTemplate
+  lensName: Sunkeeper
   lensDescriptors:
-    []
+    - AI_MUTATED
   lensApplicableContext:
     - live_camera
     - reply_camera
