@@ -1,0 +1,123 @@
+{
+ "facade_block_back_x": -0.4286,
+ "doorway": {
+  "wall_x": -0.572,
+  "y_range": [
+   -0.028,
+   0.024
+  ],
+  "centre_y": -0.002,
+  "sill_z_above_floor": 0.042,
+  "top_z_above_floor": 0.162,
+  "width": 0.052,
+  "height": 0.12,
+  "recess_back_x": -0.497
+ },
+ "facade_texture": {
+  "mean_rgb": [
+   0.751,
+   0.533,
+   0.286
+  ],
+  "std_rgb": [
+   0.056,
+   0.05,
+   0.04
+  ],
+  "mean_luminance": 0.561
+ },
+ "metallic_map": {
+  "mean": 0.0,
+  "std": 0.001
+ },
+ "interior_texture": {
+  "path": "/Users/mo/src/Sunkeeper/tools/blender/build/InteriorSandstone.png",
+  "variation": 0.094
+ },
+ "faces_straddling_cut_plane": 974,
+ "facade_after_cut": {
+  "vertices": 243858,
+  "triangles": 460083,
+  "fill_faces": 0
+ },
+ "passage_faces_removed": 821,
+ "facade_after_passage": {
+  "vertices": 243459,
+  "triangles": 459266
+ },
+ "facade_faces_reassigned_to_interior_material": 4,
+ "line_of_sight": {
+  "Statue_Ptah": {
+   "hit": "Statue_Ptah",
+   "clear": true,
+   "distance_to_hit": 1.472,
+   "distance_to_statue": 1.483
+  },
+  "Statue_AmunRa": {
+   "hit": "Statue_AmunRa",
+   "clear": true,
+   "distance_to_hit": 1.471,
+   "distance_to_statue": 1.482
+  },
+  "Statue_Ramesses": {
+   "hit": "Statue_Ramesses",
+   "clear": true,
+   "distance_to_hit": 1.471,
+   "distance_to_statue": 1.482
+  },
+  "Statue_RaHorakhty": {
+   "hit": "Statue_RaHorakhty",
+   "clear": true,
+   "distance_to_hit": 1.472,
+   "distance_to_statue": 1.483
+  },
+  "axis_ray": {
+   "hit": "Interior_Shell",
+   "stop_x": 0.914,
+   "back_wall_x": 0.914
+  }
+ },
+ "line_of_sight_origin": [
+  -0.602,
+  -0.002,
+  -0.225
+ ],
+ "totals": {
+  "Facade": {
+   "triangles": 459266
+  },
+  "Interior_Pillars": {
+   "triangles": 432
+  },
+  "Interior_Shell": {
+   "triangles": 180
+  },
+  "Statue_AmunRa": {
+   "triangles": 60
+  },
+  "Statue_Ptah": {
+   "triangles": 60
+  },
+  "Statue_RaHorakhty": {
+   "triangles": 60
+  },
+  "Statue_Ramesses": {
+   "triangles": 60
+  }
+ },
+ "model_size_m": [
+  1.9267,
+  0.9355,
+  0.6171
+ ],
+ "model_bbox_min": [
+  -0.9522,
+  -0.4676,
+  -0.3167
+ ],
+ "model_bbox_max": [
+  0.9744,
+  0.4678,
+  0.3004
+ ]
+}

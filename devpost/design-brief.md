@@ -3,6 +3,7 @@ status: approved
 ---
 
 > **Change log.** 27 Oct 2026: temple asset switched from primitive blocks to Mo's Meshy AI model (see "Temple model" under Where things live, and the README Credits).
+> 27 Oct 2026, later: inspection showed the Meshy interior off-axis with 5 sanctuary statues and 6 columns. Decision: **hybrid**. Keep the Meshy façade, replace the interior with a scripted one on the doorway axis (8 Osiride pillars, 4 pillars, vestibule, 4 separate statues). Details in devpost/asset-review/findings.md.
 
 # Design brief: SUNKEEPER — The Secret of Abu Simbel
 
