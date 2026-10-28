@@ -1,0 +1,82 @@
+- !<AssetImportMetadata/b75f647c-69af-4565-bb50-0d44fd6c8741>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> ff73a0db-4d40-43d3-923d-35975e797bc9
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> ff73a0db-4d40-43d3-923d-35975e797bc9
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 90240a94-fc33-4b00-9b74-ead29a27535d
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/90240a94-fc33-4b00-9b74-ead29a27535d>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 334ecfa4-da7e-4c26-a66b-2aa47f82a3dd
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    axisDirection: false
+    camera: false
+    caption: false
+    centreOffset: false
+    debugHoldCaption: false
+    debugLog: false
+    entranceOffset: false
+    keyLight: false
+    lightFacesBackwards: false
+    ring: false
+    shaft: false
+    sun: false
+    temple: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - camera: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      temple: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      sun: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      keyLight: !<reference.LightSource> 00000000-0000-0000-0000-000000000000
+      ring: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      shaft: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      caption: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      centreOffset: !<Vec3> {x: 0.000000, y: 10.000000, z: 0.000000}
+      entranceOffset: !<Vec3> {x: 0.000000, y: 1.000000, z: 39.000000}
+      axisDirection: !<Vec3> {x: 0.000000, y: 0.000000, z: 1.000000}
+      lightFacesBackwards: false
+      debugLog: false
+      debugHoldCaption: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject camera
+    - // @input SceneObject temple
+    - // @input SceneObject sun
+    - // @input Component.LightSource keyLight
+    - // @input SceneObject ring
+    - // @input SceneObject shaft
+    - // @input SceneObject caption
+    - '// @input vec3 centreOffset = "{0, 10, 0}"'
+    - '// @input vec3 entranceOffset = "{0, 1, 39}"'
+    - '// @input vec3 axisDirection = "{0, 0, 1}"'
+    - // @input bool lightFacesBackwards
+    - // @input bool debugLog
+    - // @input bool debugHoldCaption

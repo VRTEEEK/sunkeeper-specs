@@ -6,7 +6,9 @@
  * at Lens start instead: it walks the temple hierarchy and sets emissiveFactor on the
  * materials of the named interior objects (shell, pillars, sanctuary statues).
  *
- * Milestone 5 (statues lighting up one by one) can reuse the same material handles.
+ * Milestone 5 (statues lighting up one by one) reuses the same material handles through
+ * getMaterial(name) / getEmissive(): the lit statues go to about 2x this base emissive,
+ * Ptah stays at it.
  */
 @component
 export class InteriorLift extends BaseScriptComponent {
@@ -22,6 +24,17 @@ export class InteriorLift extends BaseScriptComponent {
   targetNames: string = 'Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty';
 
   private applied: Material[] = [];
+  private byName: { [name: string]: Material } = {};
+
+  /** Material of a named interior object (e.g. 'Statue_AmunRa'), or null if not found. */
+  getMaterial(name: string): Material | null {
+    return this.byName[name] || null;
+  }
+
+  /** The base emissive term applied to every interior material (Ptah's resting level). */
+  getEmissive(): vec3 {
+    return this.emissive;
+  }
 
   onAwake() {
     this.createEvent('OnStartEvent').bind(() => this.apply());
@@ -34,6 +47,7 @@ export class InteriorLift extends BaseScriptComponent {
     }
     const names = new Set(this.targetNames.split(',').map((s) => s.trim()).filter((s) => s.length > 0));
     this.applied = [];
+    this.byName = {};
     this.walk(this.temple, names);
     print('InteriorLift: lifted ' + this.applied.length + ' material(s)');
   }
@@ -42,6 +56,7 @@ export class InteriorLift extends BaseScriptComponent {
     if (names.has(obj.name)) {
       const rmv = obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null;
       const mat = rmv ? rmv.mainMaterial : null;
+      if (mat) this.byName[obj.name] = mat;
       if (mat && this.applied.indexOf(mat) < 0) {
         mat.mainPass.emissiveFactor = this.emissive;
         this.applied.push(mat);
