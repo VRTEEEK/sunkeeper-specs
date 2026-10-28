@@ -109,8 +109,11 @@ export class SunAlignment extends BaseScriptComponent {
   private alignedListeners: (() => void)[] = [];
 
   private ringPass: Pass | null = null;
-  private shaftPass: Pass | null = null;
+  private shaftPasses: Pass[] = [];
+  private shaftBaseColors: vec4[] = [];
   private captionText: Text | null = null;
+  private ringFade = 1;
+  private shaftFade = 1;
 
   onAwake() {
     this.createEvent('OnStartEvent').bind(() => this.start());
@@ -140,8 +143,22 @@ export class SunAlignment extends BaseScriptComponent {
    * Rotate a vector given in the temple's own axes into world axes. Only the temple's
    * rotation is applied: the offsets are in cm, the prefab's x100 scale must not touch them.
    */
-  private templeToWorld(v: vec3): vec3 {
+  templeToWorld(v: vec3): vec3 {
     return this.temple.getTransform().getWorldRotation().multiplyVec3(v);
+  }
+
+  /** World position of a point given in cm along the temple's own axes from its pivot. */
+  templePoint(local: vec3): vec3 {
+    return this.temple.getTransform().getWorldPosition().add(this.templeToWorld(local));
+  }
+
+  /**
+   * Multipliers on the two cues once locked (milestone 5 fades the ring out while the
+   * beam plays). 1 = as scored, 0 = hidden.
+   */
+  setCueFade(ring: number, shaft: number) {
+    this.ringFade = this.clamp(ring, 0, 1);
+    this.shaftFade = this.clamp(shaft, 0, 1);
   }
 
   getSunPosition(): vec3 {
@@ -153,12 +170,15 @@ export class SunAlignment extends BaseScriptComponent {
     this.locked = false;
     this.holdTimer = 0;
     this.captionTimer = 0;
+    this.ringFade = 1;
+    this.shaftFade = 1;
     if (this.caption) this.caption.enabled = false;
   }
 
   private start() {
     this.ringPass = this.passOf(this.ring);
-    this.shaftPass = this.passOf(this.shaft);
+    this.shaftPasses = this.collectPasses(this.shaft);
+    this.shaftBaseColors = this.shaftPasses.map((p) => p.baseColor as vec4);
     if (this.caption) {
       this.captionText = this.caption.getComponent('Component.Text') as Text | null;
       this.caption.enabled = false;
@@ -167,7 +187,7 @@ export class SunAlignment extends BaseScriptComponent {
       print('SunAlignment: camera, temple and sun must be assigned');
     }
     this.setAlpha(this.ringPass, RING_MIN_ALPHA);
-    this.setAlpha(this.shaftPass, 0);
+    this.setShaftGlow(0);
   }
 
   private update() {
@@ -223,8 +243,8 @@ export class SunAlignment extends BaseScriptComponent {
 
     // --- Cues ---
     const cue = this.locked ? 1 : score;
-    this.setAlpha(this.ringPass, RING_MIN_ALPHA + (RING_MAX_ALPHA - RING_MIN_ALPHA) * cue);
-    this.placeShaft(entrance, this.getSunPosition(), cue);
+    this.setAlpha(this.ringPass, (RING_MIN_ALPHA + (RING_MAX_ALPHA - RING_MIN_ALPHA) * cue) * this.ringFade);
+    this.placeShaft(entrance, this.getSunPosition(), cue * this.shaftFade);
 
     // --- Lock ---
     if (!this.locked) {
@@ -274,7 +294,7 @@ export class SunAlignment extends BaseScriptComponent {
   private placeShaft(from: vec3, to: vec3, cue: number) {
     if (!this.shaft) return;
     const alpha = SHAFT_MAX_ALPHA * cue * cue;
-    this.setAlpha(this.shaftPass, alpha);
+    this.setShaftGlow(alpha);
     this.shaft.enabled = alpha > 0.01;
     if (!this.shaft.enabled) return;
     const seg = to.sub(from);
@@ -292,6 +312,31 @@ export class SunAlignment extends BaseScriptComponent {
     const d = head.sub(t.getWorldPosition());
     const yaw = Math.atan2(d.x, d.z);
     t.setWorldRotation(quat.angleAxis(yaw, vec3.up()));
+  }
+
+  /** Every RenderMeshVisual pass on an object and its children (the shaft is two crossed quads). */
+  private collectPasses(obj: SceneObject | null): Pass[] {
+    const out: Pass[] = [];
+    if (!obj) return out;
+    const p = this.passOf(obj);
+    if (p) out.push(p);
+    const n = obj.getChildrenCount();
+    for (let i = 0; i < n; i++) {
+      for (const c of this.collectPasses(obj.getChild(i))) out.push(c);
+    }
+    return out;
+  }
+
+  /**
+   * The shaft material is additive, so brightness is driven by scaling the base colour
+   * (and alpha) by k rather than by alpha alone.
+   */
+  private setShaftGlow(k: number) {
+    const g = this.clamp(k, 0, 1);
+    for (let i = 0; i < this.shaftPasses.length; i++) {
+      const b = this.shaftBaseColors[i];
+      this.shaftPasses[i].baseColor = new vec4(b.x * g, b.y * g, b.z * g, g);
+    }
   }
 
   private passOf(obj: SceneObject | null): Pass | null {

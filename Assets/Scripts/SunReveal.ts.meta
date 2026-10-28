@@ -1,0 +1,79 @@
+- !<AssetImportMetadata/7ce69f80-c5d4-4a35-a1d2-0aa1f082baaa>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 45cdcb1b-cc10-4c2e-b470-b5c12175c5cf
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 45cdcb1b-cc10-4c2e-b470-b5c12175c5cf
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> b308d95f-006c-4abb-a041-4a37849ebcfd
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/b308d95f-006c-4abb-a041-4a37849ebcfd>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 46139d27-34a2-4c1d-a303-93b7841c8d00
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    alignment: false
+    beam: false
+    beamWidth: false
+    debugFreezeAt: false
+    debugLog: false
+    doorwayOffset: false
+    lift: false
+    lightPatch: false
+    litEmissive: false
+    patchLength: false
+    sanctuaryOffset: false
+    statueOrder: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - alignment: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      lift: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      beam: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      lightPatch: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      doorwayOffset: !<Vec3> {x: 0.000000, y: 1.700000, z: 23.700001}
+      sanctuaryOffset: !<Vec3> {x: 0.000000, y: 1.700000, z: -32.000000}
+      beamWidth: !<float> 3.000000
+      patchLength: !<float> 7.000000
+      statueOrder: "Statue_RaHorakhty,Statue_Ramesses,Statue_AmunRa"
+      litEmissive: !<Vec3> {x: 0.300000, y: 0.220000, z: 0.110000}
+      debugLog: false
+      debugFreezeAt: !<float> -1.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType_1 alignment
+    - // @input AssignableType_2 lift
+    - // @input SceneObject beam
+    - // @input SceneObject lightPatch
+    - '// @input vec3 doorwayOffset = "{0, 1.7, 23.7}"'
+    - '// @input vec3 sanctuaryOffset = "{0, 1.7, -32}"'
+    - // @input float beamWidth = 3
+    - // @input float patchLength = 7
+    - '// @input string statueOrder = "Statue_RaHorakhty,Statue_Ramesses,Statue_AmunRa"'
+    - '// @input vec3 litEmissive = "{0.30, 0.22, 0.11}"'
+    - // @input bool debugLog
+    - // @input float debugFreezeAt = -1

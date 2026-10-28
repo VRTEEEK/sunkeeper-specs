@@ -15,3 +15,15 @@ SPECS 27, Interactive scene "Plane".
 The lock for m4-3 was first triggered at the ring, pose (89, −34, −57) looking at the
 doorway (31.9, −58, −97.6); the camera was then moved out to 100 cm for the framing.
 The caption was held on screen with the script's `debugHoldCaption` input (off in the commit).
+
+## Milestone 5 screenshot camera poses
+
+The lock was triggered first at the aligned pose (114, −22, −40) looking at (29.5, −49.6, −85.9); the reveal script's `debugFreezeAt` input held the sequence clock at the stated time while the camera was moved (input back to −1 in the commit).
+
+| File | What it shows | Sequence time | Position (x, y, z) | Look at (x, y, z) | Rotation reported |
+|---|---|---|---|---|---|
+| m5-a-light-halfway-great-hall.png | Standing height behind the sanctuary, looking down the axis: patch halfway down the great hall, shaft back to the doorway, cue shaft up to the sun | +4.6 s | (−49, 0, −154) | (12, −63, −111) | (139.8, 305.2, 180) |
+| m5-b-sanctuary-three-lit-ptah-dark.png | Close on the sanctuary from above the vestibule: three statues lit, Ptah (nearest) at base | +13 s (complete) | (−19.7, −31, −133.8) | (−28.7, −62, −140) | (280.9, 0, 343.8) |
+| m5-c-full-temple-end-from-aligned-spot.png | Standing at the aligned spot at the end of the sequence | +13 s (complete) | (114, 0, −40) | (0, −58, −120) | (337.4, 54.9, 0) |
+
+Note on (a): from standing height beside the plinth the half-height side walls hide the hall floor, so the shot is taken along the axis from behind the sanctuary, where the sightline clears the walls.

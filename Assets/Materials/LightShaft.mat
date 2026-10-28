@@ -4,6 +4,9 @@
     - !<own> 8799fcfc-3486-42a3-a3b3-a78d0e169ba4
 - !<PassInfo/8799fcfc-3486-42a3-a3b3-a78d0e169ba4>
   CachedProperties:
+    - Port_Default_N369:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
     - Port_Depth_N004:
         typeIdx: 1
         value: 1.000000
@@ -76,18 +79,28 @@
     - NODE_27_DROPLIST_ITEM 0
     - NODE_49_DROPLIST_ITEM 0
     - NODE_69_DROPLIST_ITEM 0
-  BlendMode: Normal
+    - ENABLE_BASE_TEX
+  BlendMode: Add
   Properties:
     Port_Default_N204:
       typeIdx: 1
       value: 1.000000
-    Port_Default_N369:
-      typeIdx: 5
-      value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
     PreviewEnabled:
       typeIdx: 0
       value: 0
     baseColor:
       typeIdx: 5
       value: {x: 1.000000, y: 0.820000, z: 0.500000, w: 0.000000}
+    baseTex:
+      typeIdx: 9
+      value:
+        id: e14f1075-ca25-4973-82bb-a051566d05e9
+        sampler:
+          filteringMode: Trilinear
+          wrapModeU: Repeat
+          wrapModeV: Repeat
+          wrapModeW: Repeat
+          borderColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+          mipmaps: false
+        type: Texture2D
   Pass: !<reference> ee17dcee-196b-4647-951b-33d288a001ff
