@@ -41,3 +41,15 @@ tint, a halo card and a floor pool. Lock triggered at (114, −22, −40) lookin
 | m5r-a-aligned-spot-standing-sanctuary-crop.png | 300 × 400 px crop of the above around the sanctuary, enlarged 3× | same | same | same |
 | m5r-b-beside-plinth-sanctuary-side.png | Standing beside the plinth at the sanctuary end, 35 cm out from the axis, three-quarter view: three gold statues, Ptah (nearest) plain | (−20.1, 0, −91.2) | (−28.7, −61, −140) | (309.1, 10.0, 0) |
 | m5r-c-sanctuary-closeup-lit.png | Close on the sanctuary from above the vestibule: halos behind, pools in front, Ptah left | (−12, −40, −126) | (−28.5, −61, −141) | (316.7, 47.7, 0) |
+
+## Milestone 6 screenshot camera poses (viewing spot, narration, Try again)
+
+Lock triggered at (114, −22, −40) looking at (29.5, −49.6, −85.9); the sequence ran in real time (no freeze).
+
+| File | What it shows | When | Position (x, y, z) | Look at (x, y, z) | Rotation reported |
+|---|---|---|---|---|---|
+| m6-a-viewing-spot-marker-after-lock.png | The softer viewing-spot ring beside the plinth at the sanctuary end, a few seconds after lock | lock + ~5 s | (45, −10, −25) | (−20, −150, −90) | (303.3, 45, 0) |
+| m6-b-caption-mid-narration.png | Narration caption strip near the sanctuary end, seen from the viewing spot, lit statues behind | lock + ~25 s | (−20.1, 0, −91.2) | (−31, −60, −142) | (310.9, 12.1, 0) |
+| m6-c-try-again-button.png | "Try again" pinch button on the plinth's front-right corner, from the aligned side | lock + ~54 s | (89, −10, −57) | (48.7, −61, −112.8) | (323.5, 35.8, 0) |
+
+The pinch test used Lens Studio's preview input injection: with the camera aimed at the button (so it sits at render-space 0.5, 0.5), a touch start → move → end at that point, 250 ms apart, drives SIK's mouse interactor and fires the button's trigger-up.

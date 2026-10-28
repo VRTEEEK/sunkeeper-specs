@@ -30,8 +30,8 @@ const DIST_MIN_CM = 50;
 const DIST_MAX_CM = 150;
 /** Time the viewer must stay inside the window before the sun locks. */
 const HOLD_SEC = 1.0;
-/** How long the "stand up and watch" caption stays up (milestone 4 stops after it). */
-const CAPTION_SEC = 2.0;
+/** How long the lock caption stays up (long enough to read while standing up). */
+const CAPTION_SEC = 4.0;
 
 /** Distance of the sun disc from the temple centre. */
 const SUN_DISTANCE_CM = 60;
@@ -48,7 +48,7 @@ const SHAFT_MAX_ALPHA = 0.45;
 /** Shaft width (cm) when fully aligned; it narrows as alignment is lost. */
 const SHAFT_WIDTH_CM = 4;
 
-const CAPTION_LOCKED = 'Sun locked. Stand up and watch the light travel.';
+const CAPTION_LOCKED = 'Now walk to the side and look inside.';
 
 // ---------------------------------------------------------------------------
 

@@ -120,6 +120,12 @@ export class SunReveal extends BaseScriptComponent {
 
   private running = false;
   private complete = false;
+  private fading = false;
+  private pendingBegin = false;
+  private fadeSec = 0;
+  private fadeLeft = 0;
+  private fadeFromStatues: number[] = [];
+  private fadeFromGlow = 0;
   private t = 0;
   private lockTime = 0;
   private loggedPhases: { [phase: string]: boolean } = {};
@@ -151,10 +157,23 @@ export class SunReveal extends BaseScriptComponent {
     return this.t;
   }
 
+  /** Milestone 6: ease everything back to the pre-lock state over `sec` seconds, then reset(). */
+  fadeOut(sec: number) {
+    if (this.fading) return;
+    this.fadeFromStatues = this.statues.map((s) => this.litFraction(s));
+    this.fadeFromGlow = this.t >= START_DELAY_SEC ? 1 : 0;
+    this.running = false;
+    this.fading = true;
+    this.fadeSec = Math.max(sec, 0.01);
+    this.fadeLeft = this.fadeSec;
+  }
+
   /** Put everything back to the pre-lock state (Try again, milestone 6). */
   reset() {
     this.running = false;
     this.complete = false;
+    this.fading = false;
+    this.pendingBegin = false;
     this.t = 0;
     this.loggedPhases = {};
     this.setGlow(this.beamPasses, this.beamBase, 0);
@@ -209,6 +228,11 @@ export class SunReveal extends BaseScriptComponent {
   }
 
   private begin() {
+    if (this.fading) {
+      // Locked again while the reset fade runs: start as soon as the fade has finished.
+      this.pendingBegin = true;
+      return;
+    }
     if (this.running || this.complete) return;
     // InteriorLift resolved the materials at its own start; fetch the handles now.
     for (const s of this.statues) {
@@ -224,6 +248,22 @@ export class SunReveal extends BaseScriptComponent {
   }
 
   private update() {
+    if (this.fading) {
+      this.fadeLeft -= getDeltaTime();
+      const f = this.clamp(this.fadeLeft / this.fadeSec, 0, 1);
+      const base = this.lift.getEmissive();
+      for (let i = 0; i < this.statues.length; i++) this.setStatueLit(this.statues[i], base, this.fadeFromStatues[i] * f);
+      this.setGlow(this.beamPasses, this.beamBase, this.fadeFromGlow * f);
+      this.setGlow(this.patchPasses, this.patchBase, this.fadeFromGlow * f);
+      if (f <= 0) {
+        this.reset();
+        if (this.pendingBegin) {
+          this.pendingBegin = false;
+          this.begin();
+        }
+      }
+      return;
+    }
     if (!this.running) return;
     if (this.debugFreezeAt >= 0) {
       this.t = this.debugFreezeAt;
@@ -291,6 +331,13 @@ export class SunReveal extends BaseScriptComponent {
     tr.setWorldPosition(at.add(new vec3(0, 0.25, 0)));
     tr.setWorldRotation(quat.lookAt(along, vec3.up()));
     tr.setLocalScale(new vec3(this.beamWidth * 1.8, 1, this.patchLength));
+  }
+
+  /** Current lit fraction of a statue in the running sequence (0 = base, 1 = fully lit). */
+  private litFraction(s: StatueEntry): number {
+    const i = this.statues.indexOf(s);
+    const p = this.clamp((this.t - (START_DELAY_SEC + TRAVEL_SEC + i * STATUE_GAP_SEC)) / STATUE_RISE_SEC, 0, 1);
+    return this.smooth(p);
   }
 
   /** Drive one statue's emissive, gold tint, halo and pool to lit fraction k (0 = base). */

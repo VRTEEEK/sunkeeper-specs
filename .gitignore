@@ -39,3 +39,6 @@ PluginsUserPreferences/
 assets_src/
 # Blender build intermediates (hybrid.blend, generated textures)
 tools/blender/build/
+
+# Lens Studio unpacks package plugins here on open (generated)
+Plugins/

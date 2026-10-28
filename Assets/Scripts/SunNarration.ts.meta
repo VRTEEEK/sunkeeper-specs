@@ -1,0 +1,76 @@
+- !<AssetImportMetadata/587eca0c-78d6-4514-9fea-d820b9418f10>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 76bb9b58-02fd-4986-a7da-8160bb9b4b48
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 76bb9b58-02fd-4986-a7da-8160bb9b4b48
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 6f570077-0e2d-4eec-a41a-1db305e0bd29
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/6f570077-0e2d-4eec-a41a-1db305e0bd29>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: bbe4c128-582b-4e56-8e29-fcdb1b65899d
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    alignment: false
+    audio: false
+    camera: false
+    caption: false
+    debugLog: false
+    narrationAudio: false
+    reveal: false
+    stepAwayDistance: false
+    stepAwayHoldSec: false
+    tryAgain: false
+    viewingSpot: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - alignment: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      reveal: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      viewingSpot: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      camera: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      caption: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      audio: !<reference.AudioComponent> 00000000-0000-0000-0000-000000000000
+      narrationAudio: !<reference.AudioTrackAsset> 00000000-0000-0000-0000-000000000000
+      tryAgain: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
+      stepAwayDistance: !<float> 150.000000
+      stepAwayHoldSec: !<float> 2.000000
+      debugLog: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType_1 alignment
+    - // @input AssignableType_2 reveal
+    - // @input AssignableType_3 viewingSpot
+    - // @input SceneObject camera
+    - // @input SceneObject caption
+    - // @input Component.AudioComponent audio
+    - // @input Asset.AudioTrackAsset narrationAudio
+    - // @input AssignableType_4 tryAgain
+    - // @input float stepAwayDistance = 150
+    - // @input float stepAwayHoldSec = 2
+    - // @input bool debugLog
