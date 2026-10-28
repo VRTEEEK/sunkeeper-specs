@@ -66,6 +66,29 @@
   MaskTexture: !<reference> 00000000-0000-0000-0000-000000000000
   RayTracing: !<reference> 00000000-0000-0000-0000-000000000000
   DevicePropertiesSource: !<reference> 00000000-0000-0000-0000-000000000000
+- !<ScriptComponent/00038240-b8e9-4c95-959d-f0c1072ff0b0>
+  PrefabRemaps:
+    []
+  Name: CameraRig
+  Enabled: true
+  ScriptAsset: !<reference> 334c5375-29be-4a75-93da-0e46d287829b
+  ScriptInputsDefault:
+    active: true
+    path: true
+    swayCm: true
+    swayHz: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      camera: !<reference.SceneObject> 00000000-0000-0065-0000-000000000064
+      active: false
+      path: ""
+      swayCm: 0.400000
+      swayHz: 0.500000
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/0005641c-028d-459a-0000-000000014b4d>
   PrefabRemaps:
     []
@@ -1183,6 +1206,7 @@
     - !<own> 93587f7b-fdef-4f17-9910-10f0c73042a3
     - !<own> c751cc31-b658-4db2-a86a-d7bfd2606213
     - !<own> fe2fa495-e442-444d-84bd-a8dc423046df
+    - !<own> cd1b1b99-23b7-4799-b6c7-ac2fb2f0e45f
   Components:
     []
 - !<RenderMeshVisual/335c5f8b-2917-49e8-8af5-220696e9bc09>
@@ -3655,6 +3679,21 @@
     index-2: !<reference> 2dae2a27-8ce6-466a-8bff-622195c1b3a8
     thumb-3_end_end_end_end: !<reference> bf2095b6-c6f8-48c8-b840-e0a6cec0dc99
     wrist_to_pinky: !<reference> 3b4f5057-b516-4d3b-9c8d-14c81af2f505
+- !<SceneObject/cd1b1b99-23b7-4799-b6c7-ac2fb2f0e45f>
+  PrefabRemaps:
+    []
+  Name: Camera Rig
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 00038240-b8e9-4c95-959d-f0c1072ff0b0
 - !<SceneObject/ce2213a1-7aa1-4201-a3c7-c2aaa06fd4ff>
   PrefabRemaps:
     []

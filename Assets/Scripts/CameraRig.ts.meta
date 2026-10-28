@@ -1,0 +1,58 @@
+- !<AssetImportMetadata/22413d20-a67a-415e-b1b5-fe5f23d670f4>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 334c5375-29be-4a75-93da-0e46d287829b
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 334c5375-29be-4a75-93da-0e46d287829b
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 4345f4e7-e613-4ce8-ae0d-1e643c07eec2
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/4345f4e7-e613-4ce8-ae0d-1e643c07eec2>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 70bd4d25-0b68-439d-b273-a60f510d32cd
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    active: false
+    camera: false
+    path: false
+    swayCm: false
+    swayHz: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - camera: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      active: false
+      path: ""
+      swayCm: 0.400000
+      swayHz: 0.500000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject camera
+    - // @input bool active
+    - // @input string path
+    - // @input float swayCm = 0.4
+    - // @input float swayHz = 0.5
