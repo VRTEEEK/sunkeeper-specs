@@ -75,7 +75,11 @@ H = rep.get("wall_heights_above_sill", {}).get("walls", 0.30)   # side wall heig
 sill = floor_z + door["sill_z_above_floor"]
 underside = (nrm[:, 2] < -0.5) & (ctr[:, 2] < floor_z + 0.02)
 back = (nrm[:, 0] > 0.5) & (ctr[:, 0] > xb - 0.012)
-covered = back & (np.abs(ctr[:, 1] - cy) < OUT) & (ctr[:, 2] < sill + H) & ((np.abs(ctr[:, 1] - cy) > IN1) | (ctr[:, 2] < sill))
+bp = rep.get("back_plate")
+if bp:   # the back plate hides the whole lower back face (28 Oct 2026)
+    covered = back & (np.abs(ctr[:, 1] - cy) < bp["half_width"]) & (ctr[:, 2] < floor_z + bp["top_above_floor"])
+else:
+    covered = back & (np.abs(ctr[:, 1] - cy) < OUT) & (ctr[:, 2] < sill + H) & ((np.abs(ctr[:, 1] - cy) > IN1) | (ctr[:, 2] < sill))
 dg = bpy.context.evaluated_depsgraph_get()
 buried = np.zeros(n, bool)
 for i in range(n):

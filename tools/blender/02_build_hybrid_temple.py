@@ -214,6 +214,15 @@ B("Interior_Shell", x0, xe, -OUT, OUT, floor_z, sill)                        # f
 B("Interior_Shell", x0, xe, IN1, OUT, sill, sill + H)                         # side wall +Y (viewer's left)
 B("Interior_Shell", x0, xe, -OUT, -IN1, sill, sill + H)                       # side wall -Y
 B("Interior_Shell", xe - 0.06, xe, -OUT, OUT, sill, sill + H)                 # back wall
+# back plate (28 Oct 2026): a thin sandstone slab on the facade block's back, around the passage,
+# up to the old wall height. The Meshy mesh's back face has gaps there that the lowered walls no
+# longer hide; the facade's own back faces above this are kept.
+BP_TOP = sill + 0.30
+BP_HALF_W = 0.44
+B("Interior_Shell", xb - 0.01, x0, -BP_HALF_W, -pw, floor_z, BP_TOP)
+B("Interior_Shell", xb - 0.01, x0, pw, BP_HALF_W, floor_z, BP_TOP)
+B("Interior_Shell", xb - 0.01, x0, -pw, pw, pz1, BP_TOP)
+report["back_plate"] = {"top_above_floor": round(BP_TOP - floor_z, 4), "half_width": BP_HALF_W}
 # great hall x0+0.02 .. x0+0.62
 xh1a, xh1b = x0, x0 + 0.62
 for sgn in (1, -1):

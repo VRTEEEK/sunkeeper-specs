@@ -53,3 +53,19 @@ Lock triggered at (114, −22, −40) looking at (29.5, −49.6, −85.9); the s
 | m6-c-try-again-button.png | "Try again" pinch button on the plinth's front-right corner, from the aligned side | lock + ~54 s | (89, −10, −57) | (48.7, −61, −112.8) | (323.5, 35.8, 0) |
 
 The pinch test used Lens Studio's preview input injection: with the camera aimed at the button (so it sits at render-space 0.5, 0.5), a touch start → move → end at that point, 250 ms apart, drives SIK's mouse interactor and fires the button's trigger-up.
+
+## Milestone 7 screenshot camera poses (polish pass)
+
+Preview device SPECS 27 (per-eye 26.8° × 36.6°, about 45° diagonal, from the device descriptor); the scene camera inherits the device FOV.
+
+| File | What it shows | Position (x, y, z) | Look at / rotation | Notes |
+|---|---|---|---|---|
+| m7-a-opening-onboarding-caption.png | The opening from the start position: temple risen, sun on the viewer's line, "Abu Simbel, at dawn" just above the plinth's near edge | (0, 0, 0) | reset, pitch −16° | about 2 s after start |
+| m7-b-entrance-mid-rise.png | The temple half-way out of the plinth with the warm entrance glow | (0, 0, 0) | reset, pitch −16° | `debugFreezeAt` 1.0 on the Temple Entrance script (back to −1 in the commit) |
+| m7-c1-start-left.png | Start position 60 cm to the left: temple, sun and caption all in the frame | (−60, 0, 0) | (0, −50, −120) | pass 1 of the scripted loop |
+| m7-c2-aligned-spot-locked.png | The aligned spot during the reveal (before the narration caption was moved to the viewing-spot side) | (89, −34, −57) | (31.9, −58, −97.6) | the narration caption used to sit behind the sun from here |
+| m7-d-grazing-beam-check.png | Grazing angle along the axis from behind the sanctuary at wall height: beam, pools, halos; two consecutive captures differ in 0 pixels outside the caption | (−62, −49, −162) | (12, −63, −111) | flicker / z-fight check |
+| m7-c3-start-centre.png | Start position, centre: temple, sun and caption in frame | (0, 0, 0) | (0, −50, −120) | pass 2 |
+| m7-c4-viewing-spot-beam.png | Viewing spot during the reveal (narration caption still on the near side, since moved) | (−20.1, 0, −91.2) | (−31, −60, −142) | pass 2 |
+| m7-c5-start-right.png | Start position 60 cm to the right | (60, 0, 0) | (0, −50, −120) | pass 3 |
+| m7-c6-viewing-spot-narration.png | Viewing spot mid-narration with the caption on the far side of the sanctuary, scale 1.5 | (−20.1, 0, −91.2) | (−31, −60, −142) | final check run |

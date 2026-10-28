@@ -52,6 +52,10 @@
   "wall_fraction": 0.3333333333333333,
   "rear_partition_fraction": 0.25
  },
+ "back_plate": {
+  "top_above_floor": 0.342,
+  "half_width": 0.44
+ },
  "facade_faces_reassigned_to_interior_material": 4,
  "line_of_sight": {
   "Statue_Ptah": {
@@ -97,7 +101,7 @@
    "triangles": 432
   },
   "Interior_Shell": {
-   "triangles": 180
+   "triangles": 216
   },
   "Statue_AmunRa": {
    "triangles": 60

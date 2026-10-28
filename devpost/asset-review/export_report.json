@@ -4,7 +4,7 @@
  "before": {
   "Facade": 459266,
   "Interior_Pillars": 432,
-  "Interior_Shell": 180,
+  "Interior_Shell": 216,
   "Statue_AmunRa": 60,
   "Statue_Ptah": 60,
   "Statue_RaHorakhty": 60,
@@ -12,43 +12,43 @@
  },
  "cull": {
   "underside": 2672,
-  "back_face_covered_by_interior": 485,
-  "buried_backface_hits": 518,
-  "total_removed": 3558
+  "back_face_covered_by_interior": 3312,
+  "buried_backface_hits": 1873,
+  "total_removed": 7651
  },
- "after_cull": 455691,
+ "after_cull": 451385,
  "colossi_region_tris_before": [
-  190808,
-  264415
+  190809,
+  260321
  ],
  "decimate_history": [
   {
    "pass": "A",
    "region": [
-    189931,
-    36451
+    189937,
+    36326
    ]
   },
   {
    "pass": "B",
    "region": [
-    49522,
-    35734
+    49495,
+    35614
    ]
   }
  ],
  "decimate": {
-  "facade_tris": 85256,
-  "interior_tris": 852,
-  "total_tris": 86108,
+  "facade_tris": 85109,
+  "interior_tris": 888,
+  "total_tris": 85997,
   "targets": {
-   "protected": 48805,
-   "rest": 35343
+   "protected": 48784,
+   "rest": 35328
   }
  },
  "colossi_region_tris_after": [
-  49522,
-  35734
+  49495,
+  35614
  ],
  "textures": {
   "base_color": [
@@ -111,13 +111,13 @@
  },
  "glb": {
   "path": "/Users/mo/src/Sunkeeper/Assets/Temple/Temple.glb",
-  "bytes": 10585668,
-  "mb": 10.59
+  "bytes": 10584876,
+  "mb": 10.58
  },
  "verify_reimport": {
   "objects": {
    "Facade": {
-    "tris": 85256,
+    "tris": 85109,
     "materials": [
      "mat0",
      "InteriorSandstone"
@@ -150,19 +150,19 @@
     ]
    },
    "Interior_Shell": {
-    "tris": 180,
+    "tris": 216,
     "materials": [
      "InteriorSandstone"
     ],
     "bbox_min": [
-     -0.1,
      -0.177,
+     -0.182,
      0.0
     ],
     "bbox_max": [
-     0.102,
+     0.179,
      0.39,
-     0.083
+     0.138
     ]
    },
    "Statue_AmunRa": {
@@ -248,6 +248,6 @@
     2048
    ]
   },
-  "total_tris": 86108
+  "total_tris": 85997
  }
 }

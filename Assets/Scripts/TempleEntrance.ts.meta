@@ -1,0 +1,52 @@
+- !<AssetImportMetadata/577d40d0-edf7-4c90-8643-f87c00de9f4f>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 1c0f7b4c-ab99-4b2c-8a94-5b123403ec70
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 1c0f7b4c-ab99-4b2c-8a94-5b123403ec70
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 605cd0b0-aa6f-4a57-ad2d-40ffa3d28d21
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/605cd0b0-aa6f-4a57-ad2d-40ffa3d28d21>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: f1737a94-f2f9-46b1-b122-6e37b4338ca0
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    debugFreezeAt: false
+    glow: false
+    temple: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - temple: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      glow: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      debugFreezeAt: !<float> -1.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject temple
+    - // @input SceneObject glow
+    - // @input float debugFreezeAt = -1

@@ -107,6 +107,7 @@ export class SunAlignment extends BaseScriptComponent {
   private locked = false;
   private debugTimer = 0;
   private alignedListeners: (() => void)[] = [];
+  private lastScore = 0;
 
   private ringPass: Pass | null = null;
   private shaftPasses: Pass[] = [];
@@ -127,6 +128,11 @@ export class SunAlignment extends BaseScriptComponent {
 
   isLocked(): boolean {
     return this.locked;
+  }
+
+  /** Closeness to the alignment window, 0 (far) to 1 (inside), as scored on the last frame. */
+  getScore(): number {
+    return this.locked ? 1 : this.lastScore;
   }
 
   /** World position of the entrance at floor level (start of the beam path, milestone 5). */
@@ -227,6 +233,7 @@ export class SunAlignment extends BaseScriptComponent {
     const cEl = this.closeness(elevation, ELEV_MIN_DEG, ELEV_MAX_DEG);
     const cDist = this.closeness(dist, DIST_MIN_CM, DIST_MAX_CM);
     const score = cAz * cEl * cDist;
+    this.lastScore = score;
     const inside = azimuth <= AZIMUTH_TOL_DEG
       && elevation >= ELEV_MIN_DEG && elevation <= ELEV_MAX_DEG
       && dist >= DIST_MIN_CM && dist <= DIST_MAX_CM;
