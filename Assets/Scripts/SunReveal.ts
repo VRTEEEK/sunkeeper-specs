@@ -4,9 +4,11 @@
  * Listens for SunAlignment's lock. After the caption time the light enters the doorway
  * and travels down the temple axis to the sanctuary: a warm patch on the floor with a
  * soft, additive shaft extending behind it to the doorway. When the light arrives the
- * sanctuary statues ease up to about twice Ptah's brightness one by one, in the order
- * given by `statueOrder`; Ptah stays at the base level set by InteriorLift. The lit
- * state holds. `onRevealComplete()` fires once when the last statue is fully lit
+ * sanctuary statues ease up one by one, in the order given by `statueOrder`: the emissive
+ * rises, the base colour shifts from sandstone toward gold, a soft additive halo card
+ * glows behind the statue and a small warm pool lights the floor in front of it (all on
+ * the same 1 s rise). Ptah stays at the base level set by InteriorLift, neutral, with no
+ * halo or pool. The lit state holds. `onRevealComplete()` fires once when the last statue is fully lit
  * (milestone 6 narration hooks in there).
  *
  * Timeline from lock (defaults): 0 s caption, 2 s beam starts, 10 s light reaches the
@@ -35,6 +37,18 @@ const STATUE_RISE_SEC = 1.0;
 const RING_FADE_SEC = 1.5;
 
 // ---------------------------------------------------------------------------
+
+interface StatueEntry {
+  name: string;
+  mat: Material | null;
+  baseColor: vec4 | null;
+  halo: SceneObject | null;
+  haloPasses: Pass[];
+  haloBase: vec4[];
+  pool: SceneObject | null;
+  poolPasses: Pass[];
+  poolBase: vec4[];
+}
 
 @component
 export class SunReveal extends BaseScriptComponent {
@@ -74,6 +88,28 @@ export class SunReveal extends BaseScriptComponent {
   @input('vec3', '{0.30, 0.22, 0.11}')
   litEmissive: vec3;
 
+  /** Base-colour multiplier of a lit statue: shifts the sandstone toward gold (1,1,1 = no tint). */
+  @input('vec3', '{1.0, 0.82, 0.45}')
+  goldTint: vec3;
+
+  /** Parent of the per-statue glow objects, named "Halo <i>" and "Pool <i>" for statue index i. */
+  @input glowRoot: SceneObject;
+
+  /** Halo card width and height (cm); it stands behind the statue, facing the entrance. */
+  @input
+  haloWidth: number = 5;
+  @input
+  haloHeight: number = 6;
+  /** Halo card tilt back from vertical (degrees) so it also reads from above. */
+  @input
+  haloTilt: number = 25;
+  /** Diameter of the floor pool in front of each lit statue (cm). */
+  @input
+  poolSize: number = 3;
+  /** Front-to-back depth of a statue (cm); the halo sits just behind it, the pool just in front. */
+  @input
+  statueDepth: number = 1.4;
+
   /** Print the phase times (relative to lock). */
   @input
   debugLog: boolean = false;
@@ -93,7 +129,8 @@ export class SunReveal extends BaseScriptComponent {
   private beamBase: vec4[] = [];
   private patchPasses: Pass[] = [];
   private patchBase: vec4[] = [];
-  private statues: { name: string; mat: Material | null }[] = [];
+  private statues: StatueEntry[] = [];
+  private glowPlaced = false;
 
   onAwake() {
     this.createEvent('OnStartEvent').bind(() => this.start());
@@ -125,7 +162,7 @@ export class SunReveal extends BaseScriptComponent {
     if (this.beam) this.beam.enabled = false;
     if (this.lightPatch) this.lightPatch.enabled = false;
     const base = this.lift ? this.lift.getEmissive() : new vec3(0.14, 0.11, 0.07);
-    for (const s of this.statues) if (s.mat) s.mat.mainPass.emissiveFactor = base;
+    for (const s of this.statues) this.setStatueLit(s, base, 0);
     if (this.alignment) this.alignment.setCueFade(1, 1);
   }
 
@@ -146,7 +183,28 @@ export class SunReveal extends BaseScriptComponent {
       .split(',')
       .map((s) => s.trim())
       .filter((s) => s.length > 0)
-      .map((name) => ({ name, mat: null as Material | null }));
+      .map((name, i) => {
+        const halo = this.findGlow('Halo ' + i);
+        const pool = this.findGlow('Pool ' + i);
+        const haloPasses = this.ownPasses(halo);
+        const poolPasses = this.ownPasses(pool);
+        const entry: StatueEntry = {
+          name,
+          mat: null as Material | null,
+          baseColor: null as vec4 | null,
+          halo,
+          haloPasses,
+          haloBase: haloPasses.map((p) => p.baseColor as vec4),
+          pool,
+          poolPasses,
+          poolBase: poolPasses.map((p) => p.baseColor as vec4),
+        };
+        this.setGlow(entry.haloPasses, entry.haloBase, 0);
+        this.setGlow(entry.poolPasses, entry.poolBase, 0);
+        if (halo) halo.enabled = false;
+        if (pool) pool.enabled = false;
+        return entry;
+      });
     this.alignment.onAligned(() => this.begin());
   }
 
@@ -156,7 +214,9 @@ export class SunReveal extends BaseScriptComponent {
     for (const s of this.statues) {
       s.mat = this.lift.getMaterial(s.name);
       if (!s.mat) print('SunReveal: no material for ' + s.name);
+      else if (!s.baseColor) s.baseColor = this.readTint(s.mat);
     }
+    if (!this.glowPlaced) this.placeGlow();
     this.running = true;
     this.t = 0;
     this.lockTime = getTime();
@@ -200,7 +260,7 @@ export class SunReveal extends BaseScriptComponent {
     for (let i = 0; i < this.statues.length; i++) {
       const s = this.statues[i];
       const p = this.clamp((t - (arrival + i * STATUE_GAP_SEC)) / STATUE_RISE_SEC, 0, 1);
-      if (s.mat) s.mat.mainPass.emissiveFactor = vec3.lerp(base, this.litEmissive, this.smooth(p));
+      this.setStatueLit(s, base, this.smooth(p));
       if (p > 0) this.log('lit ' + s.name);
       if (p < 1) allLit = false;
     }
@@ -231,6 +291,92 @@ export class SunReveal extends BaseScriptComponent {
     tr.setWorldPosition(at.add(new vec3(0, 0.25, 0)));
     tr.setWorldRotation(quat.lookAt(along, vec3.up()));
     tr.setLocalScale(new vec3(this.beamWidth * 1.8, 1, this.patchLength));
+  }
+
+  /** Drive one statue's emissive, gold tint, halo and pool to lit fraction k (0 = base). */
+  private setStatueLit(s: StatueEntry, base: vec3, k: number) {
+    if (s.mat) {
+      s.mat.mainPass.emissiveFactor = vec3.lerp(base, this.litEmissive, k);
+      if (s.baseColor) {
+        const b = s.baseColor;
+        const tint = vec3.lerp(new vec3(1, 1, 1), this.goldTint, k);
+        this.writeTint(s.mat, new vec4(b.x * tint.x, b.y * tint.y, b.z * tint.z, b.w));
+      }
+    }
+    if (s.halo) s.halo.enabled = k > 0;
+    if (s.pool) s.pool.enabled = k > 0;
+    this.setGlow(s.haloPasses, s.haloBase, k);
+    this.setGlow(s.poolPasses, s.poolBase, k);
+  }
+
+  /** Put each halo card behind its statue and each pool on the floor in front, from the statue bounds. */
+  private placeGlow() {
+    const rot = this.temple().getWorldRotation();
+    const fwd = this.alignment.templeToWorld(new vec3(0, 0, 1)); // toward the entrance
+    const haloRot = rot.multiply(quat.angleAxis((90 - this.haloTilt) * Math.PI / 180, vec3.right()));
+    for (const s of this.statues) {
+      const obj = this.lift.getObject(s.name);
+      const rmv = obj ? (obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null) : null;
+      if (!rmv) continue;
+      const lo = rmv.worldAabbMin();
+      const hi = rmv.worldAabbMax();
+      const centre = lo.add(hi).uniformScale(0.5);
+      const depth = this.statueDepth; // the world AABB is inflated by the temple's rotation, so use the known depth
+      if (s.halo) {
+        const t = s.halo.getTransform();
+        t.setWorldPosition(new vec3(centre.x, lo.y + this.haloHeight * 0.5 - 0.3, centre.z).sub(fwd.uniformScale(depth * 0.5 + 0.3)));
+        t.setWorldRotation(haloRot);
+        t.setLocalScale(new vec3(this.haloWidth, 1, this.haloHeight));
+      }
+      if (s.pool) {
+        const t = s.pool.getTransform();
+        t.setWorldPosition(new vec3(centre.x, lo.y + 0.2, centre.z).add(fwd.uniformScale(depth * 0.5 + this.poolSize * 0.5)));
+        t.setWorldRotation(rot);
+        t.setLocalScale(new vec3(this.poolSize, 1, this.poolSize));
+      }
+      if (this.debugLog) print('SunReveal: glow for ' + s.name + ' at ' + centre.toString() + ' depth ' + depth.toFixed(2));
+    }
+    this.glowPlaced = true;
+  }
+
+  /** The glTF PBR material exposes its colour as baseColorFactor; plain materials use baseColor. */
+  private tintParam(mat: Material): string {
+    const pass = mat.mainPass as any;
+    return pass.baseColorFactor !== undefined ? 'baseColorFactor' : 'baseColor';
+  }
+
+  private readTint(mat: Material): vec4 | null {
+    const v = (mat.mainPass as any)[this.tintParam(mat)];
+    return v ? (v as vec4) : null;
+  }
+
+  private writeTint(mat: Material, v: vec4) {
+    (mat.mainPass as any)[this.tintParam(mat)] = v;
+  }
+
+  private temple(): Transform {
+    return this.alignment.temple.getTransform();
+  }
+
+  /** Child of glowRoot by name; its material is cloned so each glow fades on its own. */
+  private findGlow(name: string): SceneObject | null {
+    if (!this.glowRoot) return null;
+    const n = this.glowRoot.getChildrenCount();
+    for (let i = 0; i < n; i++) {
+      const c = this.glowRoot.getChild(i);
+      if (c.name !== name) continue;
+      const rmv = c.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null;
+      if (rmv && rmv.mainMaterial) rmv.mainMaterial = rmv.mainMaterial.clone();
+      return c;
+    }
+    print('SunReveal: no glow object named "' + name + '" under ' + this.glowRoot.name);
+    return null;
+  }
+
+  private ownPasses(obj: SceneObject | null): Pass[] {
+    if (!obj) return [];
+    const rmv = obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null;
+    return rmv && rmv.mainMaterial ? [rmv.mainMaterial.mainPass] : [];
   }
 
   // --- helpers ---

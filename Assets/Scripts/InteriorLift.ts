@@ -25,10 +25,16 @@ export class InteriorLift extends BaseScriptComponent {
 
   private applied: Material[] = [];
   private byName: { [name: string]: Material } = {};
+  private objByName: { [name: string]: SceneObject } = {};
 
   /** Material of a named interior object (e.g. 'Statue_AmunRa'), or null if not found. */
   getMaterial(name: string): Material | null {
     return this.byName[name] || null;
+  }
+
+  /** The scene object of a named interior part (e.g. 'Statue_AmunRa'), or null if not found. */
+  getObject(name: string): SceneObject | null {
+    return this.objByName[name] || null;
   }
 
   /** The base emissive term applied to every interior material (Ptah's resting level). */
@@ -48,6 +54,7 @@ export class InteriorLift extends BaseScriptComponent {
     const names = new Set(this.targetNames.split(',').map((s) => s.trim()).filter((s) => s.length > 0));
     this.applied = [];
     this.byName = {};
+    this.objByName = {};
     this.walk(this.temple, names);
     print('InteriorLift: lifted ' + this.applied.length + ' material(s)');
   }
@@ -56,6 +63,7 @@ export class InteriorLift extends BaseScriptComponent {
     if (names.has(obj.name)) {
       const rmv = obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null;
       const mat = rmv ? rmv.mainMaterial : null;
+      this.objByName[obj.name] = obj;
       if (mat) this.byName[obj.name] = mat;
       if (mat && this.applied.indexOf(mat) < 0) {
         mat.mainPass.emissiveFactor = this.emissive;

@@ -187,7 +187,19 @@ log("passage bored", report["facade_after_passage"])
 
 # ---------------------------------------------------------------- 4. build the new interior
 sill = door_z0
-H = 0.30                       # half-height walls above the sill
+# Wall heights as fractions of the facade height (milestone 5 sightline change, 28 Oct 2026):
+# the viewer must see the sanctuary statues from standing positions beside the plinth, so the
+# great hall walls stop at ~1/3 of the facade and the two rear partitions (vestibule, sanctuary)
+# at ~1/4, just under the statue crowns. Optional argv: wall fraction, rear partition fraction.
+FACADE_H = float(bmax[2] - floor_z)
+WALL_FRAC = float(argv[3]) if len(argv) > 3 else 1.0 / 3.0
+REAR_FRAC = float(argv[4]) if len(argv) > 4 else 0.25
+H = FACADE_H * WALL_FRAC - (sill - floor_z)      # side/back walls and the first partition, above the sill
+H2 = FACADE_H * REAR_FRAC - (sill - floor_z)     # vestibule and sanctuary partitions, above the sill
+PF = (H - 0.02) / 0.28                           # scale of the Osiride pillars + figures (were 0.28 tall)
+report["wall_heights_above_sill"] = {"walls": round(H, 4), "rear_partitions": round(H2, 4), "facade_height": round(FACADE_H, 4),
+                                     "wall_fraction": WALL_FRAC, "rear_partition_fraction": REAR_FRAC}
+log("facade height", round(FACADE_H, 3), "walls", round(H, 3), "rear partitions", round(H2, 3), "above the sill")
 DEPTH = 1.40                   # 2.27 x facade height (0.617)
 x0 = x_cut                     # interior starts at the facade block's back
 cy = door_cy                   # the axis
@@ -210,14 +222,15 @@ for sgn in (1, -1):
         y = sgn * 0.095
         B("Interior_Pillars", px_ - 0.03, px_ + 0.03, y - 0.03, y + 0.03, sill, sill + H - 0.02)        # pillar
         yf = y - sgn * 0.03                                                                              # face toward the axis
-        B("Interior_Pillars", px_ - 0.018, px_ + 0.018, yf - sgn * 0.012, yf, sill + 0.03, sill + 0.19)    # figure body
-        B("Interior_Pillars", px_ - 0.013, px_ + 0.013, yf - sgn * 0.014, yf, sill + 0.19, sill + 0.22)    # head
-        B("Interior_Pillars", px_ - 0.008, px_ + 0.008, yf - sgn * 0.012, yf, sill + 0.22, sill + 0.255)   # crown
-def partition(x0_, x1_, half_in, door_w, door_h):
-    B("Interior_Shell", x0_, x1_, door_w / 2, half_in, sill, sill + H)
-    B("Interior_Shell", x0_, x1_, -half_in, -door_w / 2, sill, sill + H)
-    B("Interior_Shell", x0_, x1_, -door_w / 2, door_w / 2, sill + door_h, sill + H)
-partition(x0 + 0.62, x0 + 0.66, IN1, 0.10, 0.16)
+        B("Interior_Pillars", px_ - 0.018, px_ + 0.018, yf - sgn * 0.012, yf, sill + 0.03, sill + 0.03 + 0.16 * PF)                    # figure body
+        B("Interior_Pillars", px_ - 0.013, px_ + 0.013, yf - sgn * 0.014, yf, sill + 0.03 + 0.16 * PF, sill + 0.03 + 0.19 * PF)        # head
+        B("Interior_Pillars", px_ - 0.008, px_ + 0.008, yf - sgn * 0.012, yf, sill + 0.03 + 0.19 * PF, sill + 0.03 + 0.225 * PF)       # crown
+def partition(x0_, x1_, half_in, door_w, door_h, h):
+    door_h = min(door_h, h - 0.03)                 # keep a lintel at least 3 cm (model) thick
+    B("Interior_Shell", x0_, x1_, door_w / 2, half_in, sill, sill + h)
+    B("Interior_Shell", x0_, x1_, -half_in, -door_w / 2, sill, sill + h)
+    B("Interior_Shell", x0_, x1_, -door_w / 2, door_w / 2, sill + door_h, sill + h)
+partition(x0 + 0.62, x0 + 0.66, IN1, 0.10, 0.16, H)
 # rear section narrows: fill blocks from IN2 to IN1 on both sides, x0+0.66 .. xe
 B("Interior_Shell", x0 + 0.66, xe, IN2, IN1, sill, sill + H)
 B("Interior_Shell", x0 + 0.66, xe, -IN1, -IN2, sill, sill + H)
@@ -225,9 +238,9 @@ B("Interior_Shell", x0 + 0.66, xe, -IN1, -IN2, sill, sill + H)
 for sgn in (1, -1):
     for px_ in (x0 + 0.76, x0 + 0.88):
         B("Interior_Pillars", px_ - 0.022, px_ + 0.022, sgn * 0.085 - 0.022, sgn * 0.085 + 0.022, sill, sill + H - 0.02)
-partition(x0 + 0.98, x0 + 1.02, IN2, 0.13, 0.15)
+partition(x0 + 0.98, x0 + 1.02, IN2, 0.13, 0.15, H2)
 # vestibule x0+1.02 .. x0+1.16
-partition(x0 + 1.16, x0 + 1.19, IN2, 0.14, 0.14)
+partition(x0 + 1.16, x0 + 1.19, IN2, 0.14, 0.14, H2)
 # sanctuary x0+1.19 .. xe-0.06 ; statues against the back wall
 STATUE_X = xe - 0.06 - 0.035
 order = ["Statue_Ptah", "Statue_AmunRa", "Statue_Ramesses", "Statue_RaHorakhty"]   # left -> right from the entrance = +Y -> -Y

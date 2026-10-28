@@ -27,3 +27,17 @@ The lock was triggered first at the aligned pose (114, −22, −40) looking at 
 | m5-c-full-temple-end-from-aligned-spot.png | Standing at the aligned spot at the end of the sequence | +13 s (complete) | (114, 0, −40) | (0, −58, −120) | (337.4, 54.9, 0) |
 
 Note on (a): from standing height beside the plinth the half-height side walls hide the hall floor, so the shot is taken along the axis from behind the sanctuary, where the sightline clears the walls.
+
+## Milestone 5 revision screenshot camera poses (sightlines + lit contrast)
+
+Interior walls were lowered (great hall side/back walls and the first partition to 1/3 of the
+façade height, the vestibule and sanctuary partitions to 1/4) and the lit statues got a gold
+tint, a halo card and a floor pool. Lock triggered at (114, −22, −40) looking at
+(29.5, −49.6, −85.9) with `debugFreezeAt` 13; standing height = eye at y 0, 65 cm above the plinth top.
+
+| File | What it shows | Position (x, y, z) | Look at (x, y, z) | Rotation reported |
+|---|---|---|---|---|
+| m5r-a-aligned-spot-standing.png | Standing on the floor ring (aligned spot, 70 cm from the entrance): the lit sanctuary seen over the façade top | (89, 0, −57) | (−10, −62, −128) | (333.0, 54.4, 0) |
+| m5r-a-aligned-spot-standing-sanctuary-crop.png | 300 × 400 px crop of the above around the sanctuary, enlarged 3× | same | same | same |
+| m5r-b-beside-plinth-sanctuary-side.png | Standing beside the plinth at the sanctuary end, 35 cm out from the axis, three-quarter view: three gold statues, Ptah (nearest) plain | (−20.1, 0, −91.2) | (−28.7, −61, −140) | (309.1, 10.0, 0) |
+| m5r-c-sanctuary-closeup-lit.png | Close on the sanctuary from above the vestibule: halos behind, pools in front, Ptah left | (−12, −40, −126) | (−28.5, −61, −141) | (316.7, 47.7, 0) |

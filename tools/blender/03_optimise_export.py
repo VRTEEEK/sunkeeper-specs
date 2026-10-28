@@ -70,7 +70,8 @@ n = len(me.polygons)
 ctr = np.empty(n * 3, dtype=np.float32); me.polygons.foreach_get("center", ctr); ctr = ctr.reshape(-1, 3)
 nrm = np.empty(n * 3, dtype=np.float32); me.polygons.foreach_get("normal", nrm); nrm = nrm.reshape(-1, 3)
 xb = rep["facade_block_back_x"]
-OUT, IN1, H = 0.25, 0.18, 0.30
+OUT, IN1 = 0.25, 0.18
+H = rep.get("wall_heights_above_sill", {}).get("walls", 0.30)   # side wall height above the sill, from 02
 sill = floor_z + door["sill_z_above_floor"]
 underside = (nrm[:, 2] < -0.5) & (ctr[:, 2] < floor_z + 0.02)
 back = (nrm[:, 0] > 0.5) & (ctr[:, 0] > xb - 0.012)

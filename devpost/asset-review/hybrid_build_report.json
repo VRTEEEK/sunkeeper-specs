@@ -45,6 +45,13 @@
   "vertices": 243459,
   "triangles": 459266
  },
+ "wall_heights_above_sill": {
+  "walls": 0.1637,
+  "rear_partitions": 0.1123,
+  "facade_height": 0.6171,
+  "wall_fraction": 0.3333333333333333,
+  "rear_partition_fraction": 0.25
+ },
  "facade_faces_reassigned_to_interior_material": 4,
  "line_of_sight": {
   "Statue_Ptah": {

@@ -34,11 +34,18 @@
     debugFreezeAt: false
     debugLog: false
     doorwayOffset: false
+    glowRoot: false
+    goldTint: false
+    haloHeight: false
+    haloTilt: false
+    haloWidth: false
     lift: false
     lightPatch: false
     litEmissive: false
     patchLength: false
+    poolSize: false
     sanctuaryOffset: false
+    statueDepth: false
     statueOrder: false
   ScriptTypesHidden:
     {}
@@ -59,6 +66,13 @@
       patchLength: !<float> 7.000000
       statueOrder: "Statue_RaHorakhty,Statue_Ramesses,Statue_AmunRa"
       litEmissive: !<Vec3> {x: 0.300000, y: 0.220000, z: 0.110000}
+      goldTint: !<Vec3> {x: 1.000000, y: 0.820000, z: 0.450000}
+      glowRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      haloWidth: !<float> 5.000000
+      haloHeight: !<float> 6.000000
+      haloTilt: !<float> 25.000000
+      poolSize: !<float> 3.000000
+      statueDepth: 1.400000
       debugLog: false
       debugFreezeAt: !<float> -1.000000
   ScriptTypes:
@@ -75,5 +89,12 @@
     - // @input float patchLength = 7
     - '// @input string statueOrder = "Statue_RaHorakhty,Statue_Ramesses,Statue_AmunRa"'
     - '// @input vec3 litEmissive = "{0.30, 0.22, 0.11}"'
+    - '// @input vec3 goldTint = "{1.0, 0.82, 0.45}"'
+    - // @input SceneObject glowRoot
+    - // @input float haloWidth = 5
+    - // @input float haloHeight = 6
+    - // @input float haloTilt = 25
+    - // @input float poolSize = 3
+    - // @input float statueDepth = 1.4
     - // @input bool debugLog
     - // @input float debugFreezeAt = -1

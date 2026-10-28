@@ -1,6 +1,6 @@
 {
  "target_length_m": 0.78,
- "target_triangles": 95000,
+ "target_triangles": 85000,
  "before": {
   "Facade": 459266,
   "Interior_Pillars": 432,
@@ -12,43 +12,43 @@
  },
  "cull": {
   "underside": 2672,
-  "back_face_covered_by_interior": 552,
-  "buried_backface_hits": 517,
-  "total_removed": 3624
+  "back_face_covered_by_interior": 485,
+  "buried_backface_hits": 518,
+  "total_removed": 3558
  },
- "after_cull": 455625,
+ "after_cull": 455691,
  "colossi_region_tris_before": [
   190808,
-  264349
+  264415
  ],
  "decimate_history": [
   {
    "pass": "A",
    "region": [
-    189988,
-    40598
+    189931,
+    36451
    ]
   },
   {
    "pass": "B",
    "region": [
-    55247,
-    39956
+    49522,
+    35734
    ]
   }
  ],
  "decimate": {
-  "facade_tris": 95203,
+  "facade_tris": 85256,
   "interior_tris": 852,
-  "total_tris": 96055,
+  "total_tris": 86108,
   "targets": {
-   "protected": 54605,
-   "rest": 39543
+   "protected": 48805,
+   "rest": 35343
   }
  },
  "colossi_region_tris_after": [
-  55247,
-  39956
+  49522,
+  35734
  ],
  "textures": {
   "base_color": [
@@ -111,13 +111,13 @@
  },
  "glb": {
   "path": "/Users/mo/src/Sunkeeper/Assets/Temple/Temple.glb",
-  "bytes": 10811112,
-  "mb": 10.81
+  "bytes": 10585668,
+  "mb": 10.59
  },
  "verify_reimport": {
   "objects": {
    "Facade": {
-    "tris": 95203,
+    "tris": 85256,
     "materials": [
      "mat0",
      "InteriorSandstone"
@@ -146,7 +146,7 @@
     "bbox_max": [
      0.051,
      0.188,
-     0.13
+     0.076
     ]
    },
    "Interior_Shell": {
@@ -162,7 +162,7 @@
     "bbox_max": [
      0.102,
      0.39,
-     0.138
+     0.083
     ]
    },
    "Statue_AmunRa": {
@@ -248,6 +248,6 @@
     2048
    ]
   },
-  "total_tris": 96055
+  "total_tris": 86108
  }
 }
