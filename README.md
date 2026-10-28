@@ -55,7 +55,7 @@ Your body is the controller. On a phone you would point a screen at a model; her
 ## Open it in Lens Studio
 
 1. Install Lens Studio 5.24 or newer and open `Sunkeeper.esproj`.
-2. In the Preview panel choose the SPECS device and the Interactive scene "Plane". The preview camera starts at the viewer's start position, level; tilt down to see the plinth.
+2. In the Preview panel choose the SPECS device and the Interactive scene "Evening Room" (the plinth stands on its floor; "Plane" works too). The preview camera starts at the viewer's start position, level; tilt down to see the plinth.
 3. Walk with W/A/S/D or the arrow keys, E/Q for up/down, right-mouse drag to look. From the start: D about 89 cm, W about 57 cm, Q about 34 cm, then look at the doorway (about 55° left, 19° down). The sun locks a second later.
 4. Click the "Try again" button (the mouse acts as the pinch) or walk more than 1.5 m from the plinth to reset.
 

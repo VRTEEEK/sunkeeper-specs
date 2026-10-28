@@ -42,3 +42,6 @@ tools/blender/build/
 
 # Lens Studio unpacks package plugins here on open (generated)
 Plugins/
+
+# Demo footage (never in Git)
+recordings/

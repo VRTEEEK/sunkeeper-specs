@@ -162,7 +162,7 @@
   ShadowFrustumSize: 30.000000
   ShadowFrustumNearClipPlane: 1.000000
   ShadowFrustumFarClipPlane: 1000.000000
-  UseEnvMapFromCamera: false
+  UseEnvMapFromCamera: true
   EnvMapFromCameraMode: Auto
   EstimationSharpness: 1.000000
   EnvMapExposure: 1.000000
@@ -694,7 +694,7 @@
   Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 12.000000, y: 103.000000, z: -46.000000}
+    Position: {x: 22.000000, y: 103.000000, z: -46.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.500000, y: 1.500000, z: 1.500000}
     HasSegmentScaleCompensation: false
@@ -786,6 +786,7 @@
     - !<own> bc9ab78b-3102-4485-9883-82b31e032889
     - !<own> 44910dfc-e241-4179-92da-03579e5c18ff
     - !<own> 1a575a73-bc9c-41c9-b550-41da8f405f77
+    - !<own> 49a78d5c-420b-4ee0-8ee1-0e019dc90c97
   Components:
     []
 - !<SceneObject/1e9ba159-2bd1-4d1d-83e8-6cad7f3ea016>
@@ -917,7 +918,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -952,7 +953,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -1158,7 +1159,7 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Position: {x: 0.000000, y: 15.000000, z: 0.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
@@ -1228,7 +1229,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -1459,6 +1460,21 @@
     - !<own> 8fe2a532-9bf3-4cde-b598-04ce5470718d
   Components:
     []
+- !<SceneObject/49a78d5c-420b-4ee0-8ee1-0e019dc90c97>
+  PrefabRemaps:
+    []
+  Name: Plinth Base
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 1.500000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 62.000000, y: 3.000000, z: 102.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 63368528-a212-44db-8e15-21bc45ec57da
 - !<RenderMeshVisual/4a81fa2f-e819-4f2e-ae0c-b6243672b541>
   PrefabRemaps:
     []
@@ -1618,7 +1634,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Receiver
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -1710,6 +1726,26 @@
   ScriptTypes:
     "":
       {}
+- !<RenderMeshVisual/63368528-a212-44db-8e15-21bc45ec57da>
+  PrefabRemaps:
+    []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: Receiver
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> f7900733-d639-49eb-b88c-d163d2dece33
+  Mesh: !<reference> b1052d79-a654-4b5c-b2ad-527eb81f1d45
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
 - !<ScriptComponent/64f27597-c99d-4c59-8a08-05459cc2258d>
   PrefabRemaps:
     []
@@ -1966,7 +2002,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Receiver
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -2709,6 +2745,7 @@
   ScriptAsset: !<reference> 4e776673-93c2-4b5f-954e-d0851d797d34
   ScriptInputsDefault:
     emissive: true
+    roughness: true
     targetNames: true
   ScriptTypesDefault:
     {}
@@ -2716,6 +2753,7 @@
     "":
       temple: !<reference.SceneObject> e59bf611-f258-4d5f-bff2-8fb54b0c416c
       emissive: !<Vec3> {x: 0.140000, y: 0.110000, z: 0.070000}
+      roughness: 0.920000
       targetNames: "Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty"
   ScriptTypes:
     "":
@@ -2744,7 +2782,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -3139,7 +3177,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -3325,7 +3363,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
@@ -3464,11 +3502,11 @@
   renderLayer: 1
   LightType: Directional
   Intensity: 0.800000
-  ShadowDensity: 1.000000
-  ShadowBlurRadius: 0.000000
-  ShadowTextureSize: 512
+  ShadowDensity: 0.550000
+  ShadowBlurRadius: 2.000000
+  ShadowTextureSize: 1024
   AutoLightSourcePosition: false
-  AutoShadowFrustumSize: false
+  AutoShadowFrustumSize: true
   AutoShadowFrustumSizeExtend: 2.000000
   ShadowFrustumSize: 30.000000
   ShadowFrustumNearClipPlane: 1.000000
@@ -3488,7 +3526,7 @@
   OuterConeAngle: 45.000000
   FalloffType: None
   FalloffRange: .inf
-  ShadowType: None
+  ShadowType: ShadowMap
 - !<SceneObject/c751cc31-b658-4db2-a86a-d7bfd2606213>
   PrefabRemaps:
     []
@@ -3861,7 +3899,7 @@
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
-  MeshShadowMode: None
+  MeshShadowMode: Caster
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:

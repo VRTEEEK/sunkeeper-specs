@@ -1,0 +1,52 @@
+- !<AssetImportMetadata/bd114e5a-9d57-4ed2-aab2-b26bf729b40e>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 9354bd09-d772-4bc3-b74b-b9d50fd5f477
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 9354bd09-d772-4bc3-b74b-b9d50fd5f477
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 99f32346-53c8-4017-b553-71a91ff7456d
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/99f32346-53c8-4017-b553-71a91ff7456d>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 7068c889-2718-4ab9-a542-af1917179eba
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    camera: false
+    dropFrom: false
+    intervalSec: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - camera: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      dropFrom: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      intervalSec: !<float> 1.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject camera
+    - '// @input vec3 dropFrom = "{0, 0, 0}"'
+    - // @input float intervalSec = 1

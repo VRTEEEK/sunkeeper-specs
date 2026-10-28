@@ -29,6 +29,7 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     emissive: false
+    roughness: false
     targetNames: false
     temple: false
   ScriptTypesHidden:
@@ -42,6 +43,7 @@
   DefaultScriptInputs:
     - temple: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       emissive: !<Vec3> {x: 0.140000, y: 0.110000, z: 0.070000}
+      roughness: 0.920000
       targetNames: "Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty"
   ScriptTypes:
     -
@@ -49,4 +51,5 @@
   InputLines:
     - // @input SceneObject temple
     - '// @input vec3 emissive = "{0.14, 0.11, 0.07}"'
+    - // @input float roughness = 0.92
     - '// @input string targetNames = "Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty"'

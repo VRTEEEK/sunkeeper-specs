@@ -1,5 +1,7 @@
 # Milestone 4 screenshot camera poses (Lens Studio 5.24 Interactive Preview)
 
+> **28 Oct 2026, after the demo look pass:** the whole scene was raised 15 cm so the plinth stands on the Evening Room floor. Add **+15 to every y** (positions and look-at points) in the tables below; x and z are unchanged. The preview scene is now "Evening Room", not "Plane".
+
 World units are cm; the viewer starts at the origin facing −Z. Poses are the preview
 camera's position and the point it looks at (Inspector coordinates), plus the resulting
 rotation (pitch x, yaw y) that `MovePreviewCamera getPose` reported. Preview device
@@ -69,3 +71,11 @@ Preview device SPECS 27 (per-eye 26.8° × 36.6°, about 45° diagonal, from the
 | m7-c4-viewing-spot-beam.png | Viewing spot during the reveal (narration caption still on the near side, since moved) | (−20.1, 0, −91.2) | (−31, −60, −142) | pass 2 |
 | m7-c5-start-right.png | Start position 60 cm to the right | (60, 0, 0) | (0, −50, −120) | pass 3 |
 | m7-c6-viewing-spot-narration.png | Viewing spot mid-narration with the caption on the far side of the sanctuary, scale 1.5 | (−20.1, 0, −91.2) | (−31, −60, −142) | final check run |
+
+## Demo look pass (Evening Room, scene raised 15 cm)
+
+| File | What it shows | Position (x, y, z) | Look at / rotation |
+|---|---|---|---|
+| look-after-start.png | Start position in the Evening Room: stone plinth, temple risen, onboarding caption | (0, 0, 0) | reset, pitch −16° |
+| look-after-aligned-spot.png | Ring spot, locked, reveal frozen at its end | (89, −19, −57) | (31.9, −43, −97.6) |
+| look-after-viewing-spot.png | Viewing spot, lit sanctuary, closing caption | (−20.1, 15, −91.2) | (−31, −45, −142) |

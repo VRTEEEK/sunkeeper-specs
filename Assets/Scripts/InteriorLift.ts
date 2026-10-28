@@ -19,6 +19,10 @@ export class InteriorLift extends BaseScriptComponent {
   @input('vec3', '{0.14, 0.11, 0.07}')
   emissive: vec3;
 
+  /** Roughness applied to the interior materials (matte sandstone, nothing glossy); < 0 leaves the import value. */
+  @input
+  roughness: number = 0.92;
+
   /** Comma-separated names of the interior objects whose materials get the lift. */
   @input
   targetNames: string = 'Interior_Shell,Interior_Pillars,Statue_Ptah,Statue_AmunRa,Statue_Ramesses,Statue_RaHorakhty';
@@ -67,6 +71,11 @@ export class InteriorLift extends BaseScriptComponent {
       if (mat) this.byName[obj.name] = mat;
       if (mat && this.applied.indexOf(mat) < 0) {
         mat.mainPass.emissiveFactor = this.emissive;
+        if (this.roughness >= 0) {
+          const pass = mat.mainPass as any;
+          if (pass.roughnessFactor !== undefined) pass.roughnessFactor = this.roughness;
+          else if (pass.roughness !== undefined) pass.roughness = this.roughness;
+        }
         this.applied.push(mat);
       }
     }
