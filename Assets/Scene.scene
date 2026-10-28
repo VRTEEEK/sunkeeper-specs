@@ -665,7 +665,6 @@
   Enabled: true
   ScriptAsset: !<reference> 76bb9b58-02fd-4986-a7da-8160bb9b4b48
   ScriptInputsDefault:
-    narrationAudio: true
     stepAwayDistance: true
     stepAwayHoldSec: true
     debugLog: true
@@ -679,7 +678,8 @@
       camera: !<reference.SceneObject> 00000000-0000-0065-0000-000000000064
       caption: !<reference.SceneObject> 1a575a73-bc9c-41c9-b550-41da8f405f77
       audio: !<reference.AudioComponent> 0ce12915-6df2-4021-b50f-c0ec81c5af40
-      narrationAudio: !<reference.AudioTrackAsset> 00000000-0000-0000-0000-000000000000
+      narrationAudio: !<reference.AudioTrackAsset> 5ead4b61-464e-432b-b4db-e1617c28affd
+      voiceCueTimes: "0.1,2.15,5.0,6.7,9.45,12.95,17.7,22.3,24.45,26.5,28.95,31.8,34.15,35.75"
       tryAgain: !<MappingBased.AssignableType_4> f5fcd479-666b-4969-b9e1-4fffb8403e5f
       stepAwayDistance: !<float> 150.000000
       stepAwayHoldSec: !<float> 2.000000

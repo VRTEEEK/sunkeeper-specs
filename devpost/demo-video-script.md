@@ -50,6 +50,6 @@ I planned it with the Devpost Learn skill pack: an interview that became a desig
 Sunkeeper. Find where the sun must stand.
 
 ## Notes
-- The in-Lens narration (14 captions, `Assets/Scripts/SunNarration.ts`) is separate from this voiceover and must not be read aloud over it; shot 8 lets it speak for itself.
+- The in-Lens narration (Mo's recording `Assets/Audio/Narration.mp3` with 14 cued captions, `Assets/Scripts/SunNarration.ts`) is separate from this voiceover and must not be talked over; shot 8 lets it speak for itself, so record the preview's audio for that shot.
 - Keep the preview's grid floor: it reads as the room. Hide the Lens Studio panels around the preview if the recorder allows.
 - Dates on screen or in VO: "built c. 1264–1244 BCE" in text; "around 1264 BCE" is fine in speech.

@@ -20,7 +20,7 @@ Your body is the controller. On a phone you would point a screen at a model; her
 2. **Walk round.** The sun disc and a key light ride on the line from the temple to your head. A floor ring and a faint light shaft brighten as you near the spot on the temple axis.
 3. **Get low and lock.** Inside the window (±7° of the axis, head 0–25° above the entrance, 50–150 cm out) for one second, the sun locks and the caption says "Now walk to the side and look inside." A softer ring marks the best viewing spot beside the plinth.
 4. **The revelation.** Two seconds later a warm patch of light enters the doorway and travels the axis for eight seconds with a soft shaft behind it. When it arrives, Ra-Horakhty, Ramesses and Amun-Ra ease up to a warm gold with a halo and a pool of light, 0.8 s apart. Ptah stays plain sandstone.
-5. **The story.** Fourteen short captions near the sanctuary end tell what you have just seen, about 40 seconds. Then "Try again" appears on the plinth corner; pinch it, or step well away, and everything fades back to the start.
+5. **The story.** A 38-second recorded narration, with fourteen short captions near the sanctuary end cued to it, tells what you have just seen. Then "Try again" appears on the plinth corner; pinch it, or step well away, and everything fades back to the start.
 
 ![Locked on the axis: ring and shaft at full strength, the caption up](devpost/screenshots/m4-3-locked-caption.png)
 
@@ -41,7 +41,7 @@ Your body is the controller. On a phone you would point a screen at a model; her
 - **A 25° elevation window.** The real dawn sun is a few degrees above the horizon. Asking for that would mean kneeling at a 95 cm plinth, so the window is 0–25° above the entrance: a slight bend, held for one second, not a crouch.
 - **Walls at a third of the façade height.** The real halls are enclosed; here the roof is off and the walls are low so the payoff is visible from natural standing positions beside the plinth. The vestibule and sanctuary partitions are lower still, just above the statues' crowns.
 - **A virtual plinth stands in for the table.** The preview has no real surface, so a museum-style display stand 95 cm high and 60 × 100 cm on top is placed 120 cm ahead at start, rotated 55° so the axis has to be found. On SPECS the same plinth would be dropped onto a real table; that placement step is not part of this build.
-- **Captions, no panels.** The only UI is a caption strip (two positions: the plinth's front corner for the lock, the sanctuary end for the story) and one pinch button. No text-to-speech: Lens Studio 5.24 deprecates it, so a recorded voice file can be dropped into the "Narration Audio" slot of the Sun Narration script and the captions stretch to its length.
+- **Captions, no panels.** The only UI is a caption strip (two positions: the plinth's front corner for the lock, the sanctuary end for the story) and one pinch button. No text-to-speech: Lens Studio 5.24 deprecates it, so the story is Mo's own recording, `Assets/Audio/Narration.mp3` (38 s), assigned to the "Narration Audio" slot of the Sun Narration script; each caption is cued to the pause before its phrase in the recording (the `Voice Cue Times` input), so captions and voice stay in step.
 
 ## Historical notes
 

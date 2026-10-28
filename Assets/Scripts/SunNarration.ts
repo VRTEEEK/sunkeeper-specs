@@ -76,6 +76,14 @@ export class SunNarration extends BaseScriptComponent {
   @allowUndefined
   narrationAudio: AudioTrackAsset;
 
+  /**
+   * Optional: when a voice file is assigned, the second (from the start of the file) at which each
+   * phrase begins, comma-separated, one per phrase. Measured from the recording's pauses. Leave
+   * empty to spread the phrases over the file's length by word count instead.
+   */
+  @input
+  voiceCueTimes: string = '';
+
   /** The UI Kit "Try again" button on the plinth's front-right corner. */
   @input tryAgain: RectangleButton;
 
@@ -135,21 +143,30 @@ export class SunNarration extends BaseScriptComponent {
     this.phase = 'narrating';
     this.t = 0;
     this.phraseIndex = -1;
-    // Timeline: reading pace, or stretched to the voice file's length when one is assigned.
-    const durations = PHRASES.map((p) => p.split(' ').length / WORDS_PER_SEC + PHRASE_GAP_SEC);
-    let total = durations.reduce((a, b) => a + b, 0);
+    // Timeline: measured voice cues, else reading pace stretched to the voice file's length, else reading pace.
     const voice = this.audio && this.narrationAudio ? this.audio.duration : 0;
-    const scale = voice > 1 ? voice / total : 1;
+    const cues = this.parseCues();
+    let mode = 'reading pace';
     this.phraseEnds = [];
-    let acc = 0;
-    for (const d of durations) {
-      acc += d * scale;
-      this.phraseEnds.push(acc);
+    if (voice > 1 && cues.length === PHRASES.length) {
+      // Each phrase ends where the next begins; the last one ends with the file.
+      for (let i = 0; i < PHRASES.length; i++) this.phraseEnds.push(i + 1 < cues.length ? cues[i + 1] : voice);
+      mode = 'timed to the voice cues';
+    } else {
+      const durations = PHRASES.map((p) => p.split(' ').length / WORDS_PER_SEC + PHRASE_GAP_SEC);
+      const base = durations.reduce((a, b) => a + b, 0);
+      const scale = voice > 1 ? voice / base : 1;
+      let acc = 0;
+      for (const d of durations) {
+        acc += d * scale;
+        this.phraseEnds.push(acc);
+      }
+      if (voice > 1) mode = 'stretched to the voice file';
     }
-    total = acc;
+    const total = this.phraseEnds[this.phraseEnds.length - 1];
     this.playVoice();
     this.caption.enabled = true;
-    print('NARRATION_START +' + this.sinceLock() + ' s after lock, ' + PHRASES.length + ' phrases over ' + total.toFixed(1) + ' s' + (scale !== 1 ? ' (timed to the voice file)' : ' (reading pace)'));
+    print('NARRATION_START +' + this.sinceLock() + ' s after lock, ' + PHRASES.length + ' phrases over ' + total.toFixed(1) + ' s (' + mode + (voice > 1 ? ', voice file ' + voice.toFixed(1) + ' s' : '') + ')');
   }
 
   private update() {
@@ -221,6 +238,15 @@ export class SunNarration extends BaseScriptComponent {
   }
 
   // --- helpers ---
+
+  private parseCues(): number[] {
+    const out: number[] = [];
+    for (const part of this.voiceCueTimes.split(',')) {
+      const v = parseFloat(part.trim());
+      if (!isNaN(v)) out.push(v);
+    }
+    return out;
+  }
 
   /** The voice file is optional: without one the AudioComponent has no player and throws. */
   private playVoice() {
