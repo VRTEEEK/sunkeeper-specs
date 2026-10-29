@@ -12,7 +12,9 @@
  * shaft from the doorway towards the sun. Both scale smoothly with closeness; nothing flashes.
  *
  * When the viewer stays inside the tolerance for HOLD_SEC the sun locks, the caption shows
- * for CAPTION_SEC, and "ALIGNED" is logged. The beam travel and the statue lighting are
+ * for CAPTION_SEC, and "ALIGNED" is logged. The caption appears where the viewer is looking at
+ * that moment: just above the doorway, pulled towards the viewer, and kept inside the camera's
+ * field of view (the SPECS display) while it is up, so standing up and turning never clips it. The beam travel and the statue lighting are
  * milestone 5: they subscribe through onAligned().
  */
 
@@ -49,6 +51,11 @@ const SHAFT_MAX_ALPHA = 0.45;
 const SHAFT_WIDTH_CM = 4;
 
 const CAPTION_LOCKED = 'Now walk to the side and look inside.';
+
+/** Safety margin (degrees) between the caption's edge and the edge of the field of view. */
+const CAPTION_FOV_MARGIN_DEG = 2.5;
+/** The caption never comes closer than this (cm), so it stays comfortable to read. */
+const CAPTION_MIN_DEPTH_CM = 35;
 
 // ---------------------------------------------------------------------------
 
@@ -97,6 +104,20 @@ export class SunAlignment extends BaseScriptComponent {
   @input
   debugLog: boolean = false;
 
+  /** Lock caption anchor: this far above the doorway (cm). */
+  @input
+  captionLiftCm: number = 9;
+
+  /** Lock caption anchor: pulled this far from the doorway towards the viewer (cm). */
+  @input
+  captionTowardViewerCm: number = 12;
+
+  /** Half the lock caption's on-screen size in cm (two lines of text at its scale), for the FOV clamp. */
+  @input
+  captionHalfWidthCm: number = 15;
+  @input
+  captionHalfHeightCm: number = 4;
+
   /** Keep the caption up after lock instead of hiding it after CAPTION_SEC (for screenshots). */
   @input
   debugHoldCaption: boolean = false;
@@ -113,6 +134,7 @@ export class SunAlignment extends BaseScriptComponent {
   private shaftPasses: Pass[] = [];
   private shaftBaseColors: vec4[] = [];
   private captionText: Text | null = null;
+  private cameraComp: Camera | null = null;
   private ringFade = 1;
   private shaftFade = 1;
 
@@ -191,6 +213,8 @@ export class SunAlignment extends BaseScriptComponent {
     }
     if (!this.camera || !this.temple || !this.sun) {
       print('SunAlignment: camera, temple and sun must be assigned');
+    } else {
+      this.cameraComp = this.camera.getComponent('Component.Camera') as Camera | null;
     }
     this.setAlpha(this.ringPass, RING_MIN_ALPHA);
     this.setShaftGlow(0);
@@ -256,20 +280,32 @@ export class SunAlignment extends BaseScriptComponent {
     // --- Lock ---
     if (!this.locked) {
       this.holdTimer = inside ? this.holdTimer + dt : 0;
-      if (this.holdTimer >= HOLD_SEC) this.lock();
+      if (this.holdTimer >= HOLD_SEC) this.lock(head, entrance);
     } else if (this.captionTimer > 0 && !this.debugHoldCaption) {
       this.captionTimer -= dt;
       if (this.captionTimer <= 0 && this.caption) this.caption.enabled = false;
     }
 
-    if (this.caption && this.caption.enabled) this.faceViewer(this.caption, head);
+    if (this.caption && this.caption.enabled) {
+      this.keepInView(this.caption, head);
+      this.faceViewer(this.caption, head);
+    }
   }
 
-  private lock() {
+  private lock(head: vec3, entrance: vec3) {
     this.locked = true;
     this.captionTimer = CAPTION_SEC;
     if (this.captionText) this.captionText.text = CAPTION_LOCKED;
-    if (this.caption) this.caption.enabled = true;
+    if (this.caption) {
+      // Anchor in the gaze at the moment of lock: just above the doorway the viewer is
+      // looking along, pulled a little towards them so it floats in front of the façade.
+      const toHead = head.sub(entrance);
+      const pull = toHead.length > 0.001 ? toHead.normalize().uniformScale(this.captionTowardViewerCm) : vec3.zero();
+      this.caption.getTransform().setWorldPosition(entrance.add(vec3.up().uniformScale(this.captionLiftCm)).add(pull));
+      this.keepInView(this.caption, head);
+      this.faceViewer(this.caption, head);
+      this.caption.enabled = true;
+    }
     print('ALIGNED');
     for (const l of this.alignedListeners) l();
   }
@@ -312,6 +348,33 @@ export class SunAlignment extends BaseScriptComponent {
     t.setWorldRotation(quat.lookAt(seg.normalize(), vec3.up()));
     const w = SHAFT_WIDTH_CM * (0.4 + 0.6 * cue);
     t.setLocalScale(new vec3(w, w, len));
+  }
+
+  /**
+   * Keeps obj inside the camera's field of view with its whole text block visible: the object
+   * stays where it is while it fits, and is moved to the nearest in-view point when the head
+   * turns or moves so that it would be clipped (a lazy follow, nothing moves while it fits).
+   */
+  private keepInView(obj: SceneObject, head: vec3) {
+    if (!this.camera) return;
+    const rot = this.camera.getTransform().getWorldRotation();
+    const look = rot.multiplyVec3(new vec3(0, 0, -1));
+    const right = rot.multiplyVec3(new vec3(1, 0, 0));
+    const upv = rot.multiplyVec3(new vec3(0, 1, 0));
+    const t = obj.getTransform();
+    const v = t.getWorldPosition().sub(head);
+    let z = Math.max(v.dot(look), CAPTION_MIN_DEPTH_CM);
+    const fovV = this.cameraComp ? this.cameraComp.fov : 0.64;
+    const aspect = this.cameraComp ? this.cameraComp.aspect : 0.73;
+    const margin = (CAPTION_FOV_MARGIN_DEG * Math.PI) / 180;
+    const halfV = fovV / 2;
+    const halfH = Math.atan(Math.tan(halfV) * aspect);
+    const limH = Math.max(halfH - Math.atan(this.captionHalfWidthCm / z) - margin, 0);
+    const limV = Math.max(halfV - Math.atan(this.captionHalfHeightCm / z) - margin, 0);
+    const ax = this.clamp(Math.atan2(v.dot(right), z), -limH, limH);
+    const ay = this.clamp(Math.atan2(v.dot(upv), z), -limV, limV);
+    const p = head.add(look.uniformScale(z)).add(right.uniformScale(z * Math.tan(ax))).add(upv.uniformScale(z * Math.tan(ay)));
+    if (p.distance(t.getWorldPosition()) > 0.01) t.setWorldPosition(p);
   }
 
   private faceViewer(obj: SceneObject, head: vec3) {

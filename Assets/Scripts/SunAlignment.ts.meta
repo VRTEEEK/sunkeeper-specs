@@ -31,6 +31,10 @@
     axisDirection: false
     camera: false
     caption: false
+    captionHalfHeightCm: false
+    captionHalfWidthCm: false
+    captionLiftCm: false
+    captionTowardViewerCm: false
     centreOffset: false
     debugHoldCaption: false
     debugLog: false
@@ -62,6 +66,10 @@
       axisDirection: !<Vec3> {x: 0.000000, y: 0.000000, z: 1.000000}
       lightFacesBackwards: false
       debugLog: false
+      captionLiftCm: !<float> 9.000000
+      captionTowardViewerCm: !<float> 12.000000
+      captionHalfWidthCm: !<float> 15.000000
+      captionHalfHeightCm: !<float> 4.000000
       debugHoldCaption: false
   ScriptTypes:
     -
@@ -79,4 +87,8 @@
     - '// @input vec3 axisDirection = "{0, 0, 1}"'
     - // @input bool lightFacesBackwards
     - // @input bool debugLog
+    - // @input float captionLiftCm = 9
+    - // @input float captionTowardViewerCm = 12
+    - // @input float captionHalfWidthCm = 15
+    - // @input float captionHalfHeightCm = 4
     - // @input bool debugHoldCaption
