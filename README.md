@@ -1,3 +1,5 @@
+<p align="center"><img src="devpost/branding/icon-master.png" alt="Sunkeeper icon: the dawn sun sends its beam into the temple, lighting three of the four sanctuary statues" width="320"></p>
+
 # Sunkeeper — The Secret of Abu Simbel
 
 A SPECS Lens for **Learn AR with SPECS**, the Devpost learning hackathon.
@@ -75,6 +77,7 @@ The Lens is preview-only: it has not been run on a SPECS device.
 - Meshy plan and output licence: `[Meshy plan + licence: TO CONFIRM]`. The temple model (`Assets/Temple/Temple.glb`) is under that licence, not the MIT licence below.
 - Built with Lens Studio, Spectacles Interaction Kit, Spectacles UI Kit and the CLAD agent toolkit; planned with the Devpost Learn skill pack (`plan-lens`).
 - Historical details checked against the brief's facts section; corrections welcome.
+- Icon artwork generated with AI by Mo. It was checked for accuracy and not mirrored: the unlit statue (Ptah) is already on the left, as in the Lens and the real sanctuary. Exports and the Devpost thumbnail are in `devpost/branding/`.
 
 ## Licence
 

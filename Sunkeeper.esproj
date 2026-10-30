@@ -26,7 +26,7 @@ metaInfo:
   lensClientCompatibilities:
     - Spectacles
   platformBundlesEnabled: false
-  iconHash: ""
+  iconHash: ee3062ee78324443fe0ab0ec39faafc2
   videoPreviewHash: ""
   localizationsHash: ""
   fromTemplateName: Specs Base Template
