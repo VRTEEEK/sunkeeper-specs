@@ -1,7 +1,7 @@
 # Sunkeeper — demo video script (target 2:40, hard limit 2:45)
 
 Record the Lens Studio Interactive Preview (SPECS 27 device, scene "Plane") at full panel size.
-Camera poses below are Inspector coordinates, taken from `screenshots/m4-camera-poses.md`;
+Camera poses below are Inspector coordinates, taken from `screenshots/archive/m4-camera-poses.md`;
 set them with the preview's camera controls or by typing them into the Inspector. Freeze inputs
 (`debugFreezeAt` on the Temple Entrance and Sun Reveal scripts, `debugHoldCaption` on Sun
 Alignment) hold a moment for a clean take; set them back before committing.

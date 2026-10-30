@@ -1,12 +1,14 @@
 <p align="center"><img src="devpost/branding/icon-master.png" alt="Sunkeeper icon: the dawn sun sends its beam into the temple, lighting three of the four sanctuary statues" width="320"></p>
 
+<p align="center"><img src="devpost/media/sunkeeper-reveal.gif" alt="The reveal: the sun's ray runs down the halls and three of the four sanctuary statues turn gold while Ptah stays plain" width="800"></p>
+
+<p align="center"><b><a href="https://youtu.be/uRk7Q1HWYWQ">▶ Watch the demo</a></b></p>
+
 # Sunkeeper — The Secret of Abu Simbel
 
 A SPECS Lens for **Learn AR with SPECS**, the Devpost learning hackathon.
 
 Move through space, align the sun, and reveal a 3,000-year-old secret. A cut-away model of the Great Temple of Ramesses II (built c. 1264–1244 BCE) sits on a plinth in front of you. A glowing sun hangs on your side of the temple and follows you as you walk. Find the one spot where the real sun stands twice a year, low and straight in front of the entrance, and the light travels sixty metres through the halls to the sanctuary, where three of the four seated gods light up. Ptah, god of the underworld, stays in shadow.
-
-![The opening: temple on its plinth, the sun on your side, the onboarding caption](devpost/screenshots/m7-a-opening-onboarding-caption.png)
 
 ## Who it is for
 
@@ -24,16 +26,21 @@ Your body is the controller. On a phone you would point a screen at a model; her
 4. **The revelation.** Two seconds later a warm patch of light enters the doorway and travels the axis for eight seconds with a soft shaft behind it. When it arrives, Ra-Horakhty, Ramesses and Amun-Ra ease up to a warm gold with a halo and a pool of light, 0.8 s apart. Ptah stays plain sandstone.
 5. **The story.** A 38-second recorded narration, with fourteen short captions near the sanctuary end cued to it, tells what you have just seen. Then "Try again" appears on the plinth corner; pinch it, or step well away, and everything fades back to the start.
 
-![Locked on the axis: ring and shaft at full strength, the caption up](devpost/screenshots/m4-3-locked-caption.png)
-
-![From beside the plinth: three gold statues, Ptah nearest and unlit](devpost/screenshots/m5r-b-beside-plinth-sanctuary-side.png)
-
-![Close on the sanctuary: halos behind the lit statues, pools on the floor](devpost/screenshots/m5r-c-sanctuary-closeup-lit.png)
+<table>
+  <tr>
+    <td width="50%" align="center"><img src="devpost/media/final-01-walk.png" alt="Walking round the temple with the sun above it" width="100%"><br><sub>Walk round: the sun follows you</sub></td>
+    <td width="50%" align="center"><img src="devpost/media/final-02-lock.png" alt="Locked on the axis: the ray at the doorway and the caption below it" width="100%"><br><sub>Lock: the sun stands on the axis</sub></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="devpost/media/final-03-reveal.png" alt="The sanctuary: three statues gold, Ptah plain" width="100%"><br><sub>Reveal: three gods lit, Ptah plain</sub></td>
+    <td width="50%" align="center"><img src="devpost/media/final-04-temple.png" alt="The whole temple on its plinth: façade, rock mass and cut-away halls" width="100%"><br><sub>The temple: façade and cut-away halls</sub></td>
+  </tr>
+</table>
 
 ## How it was built
 
 - **Plan.** The Devpost Learn skill pack's `plan-lens` skill (a copy lives in `agent/skills/plan-lens/`) interviewed me and wrote `devpost/design-brief.md`: the one spatial moment, where things live, when things show, done criteria, the historical facts the build must respect, and the risks. Every later change is logged at the top of that file.
-- **Build.** Snap's CLAD agent toolkit drove Lens Studio 5.24 through its MCP tools, milestone by milestone, with screenshots at each sign-off (`devpost/screenshots/`, camera poses in `m4-camera-poses.md`). All logic is TypeScript in `Assets/Scripts/`: `SunAlignment` (sun, key light, cues, lock), `SunReveal` (beam, statue lighting, fade-out), `SunNarration` (captions, Try again, step-away reset), `ViewingSpot`, `Onboarding`, `TempleEntrance`, `InteriorLift`. Interactions use the Spectacles Interaction Kit and UI Kit so they work with the mouse in the Interactive Preview.
+- **Build.** Snap's CLAD agent toolkit drove Lens Studio 5.24 through its MCP tools, milestone by milestone, with screenshots at each sign-off (round-2 QA in `devpost/screenshots/`, earlier milestones and camera poses in `devpost/screenshots/archive/`). All logic is TypeScript in `Assets/Scripts/`: `SunAlignment` (sun, key light, cues, lock), `SunReveal` (beam, statue lighting, fade-out), `SunNarration` (captions, Try again, step-away reset), `ViewingSpot`, `Onboarding`, `TempleEntrance`, `InteriorLift`. Interactions use the Spectacles Interaction Kit and UI Kit so they work with the mouse in the Interactive Preview.
 - **Temple.** The façade is an image-to-3D model generated with Meshy AI. Inspection (`devpost/asset-review/findings.md`) showed its interior off the doorway axis with five sanctuary statues and six columns, so the interior was deleted and rebuilt on the axis with three headless Blender scripts in `tools/blender/`: inspect, build the hybrid (passage bored through the rock, eight Osiride pillars, four pillars, vestibule, four separate statues), then optimise and export `Assets/Temple/Temple.glb` (96k triangles, 2048 px textures, 10.6 MB).
 
 ## Design decisions
