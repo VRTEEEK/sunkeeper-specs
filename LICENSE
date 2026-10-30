@@ -20,5 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-The temple model in Assets/Temple/ (generated with Meshy AI and reworked in
-Blender) is not covered by this licence; see the Credits section of README.md.
+The temple model (Assets/Temple/Temple.glb and its textures) is not covered by
+this licence. It is © 2026 Mo / VRTEEK, all rights reserved. It's included for
+viewing and evaluating this project, but not licensed for reuse or
+redistribution. The code is MIT.
