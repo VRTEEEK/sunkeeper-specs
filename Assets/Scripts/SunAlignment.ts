@@ -123,9 +123,15 @@ export class SunAlignment extends BaseScriptComponent {
   @input('vec3', '{0, 1, 39}')
   entranceOffset: vec3;
 
-  /** Centre of the façade's top edge, in cm along the temple's own axes (the disc stays above it). */
+  /** Centre of the façade's top front edge, in cm along the temple's own axes (the disc stays above it). */
   @input('vec3', '{0, 27, 36}')
   facadeTopOffset: vec3;
+
+  /** Depth (cm) of the façade block's top, and half its width: from above, the back edge is the visible top. */
+  @input
+  facadeTopDepthCm: number = 20;
+  @input
+  facadeTopHalfWidthCm: number = 17;
 
   /** Direction the façade faces, in the temple's own axes (+Z = out of the doorway). */
   @input('vec3', '{0, 0, 1}')
@@ -445,7 +451,9 @@ export class SunAlignment extends BaseScriptComponent {
 
   /**
    * The visible disc: same azimuth and distance from the viewer as the light, raised by
-   * DISC_RAISE_DEG, and further if needed so its lower edge clears the façade's top edge.
+   * DISC_RAISE_DEG, and further if needed so its lower edge clears the façade's top as seen
+   * from the head: the highest of six points on the front and back top edges (seen from
+   * above, the back edge is the visible top).
    */
   private raisedDisc(head: vec3, light: vec3): vec3 {
     const v = light.sub(head);
@@ -453,8 +461,13 @@ export class SunAlignment extends BaseScriptComponent {
     const flat = new vec3(v.x, 0, v.z);
     const fl = flat.length;
     if (d < 0.001 || fl < 0.001) return light;
-    const top = this.templePoint(this.facadeTopOffset).sub(head);
-    const topElev = Math.atan2(top.y, Math.sqrt(top.x * top.x + top.z * top.z));
+    let topElev = -Math.PI / 2;
+    for (const dz of [0, -this.facadeTopDepthCm]) {
+      for (const dx of [-this.facadeTopHalfWidthCm, 0, this.facadeTopHalfWidthCm]) {
+        const top = this.templePoint(this.facadeTopOffset.add(new vec3(dx, 0, dz))).sub(head);
+        topElev = Math.max(topElev, Math.atan2(top.y, Math.sqrt(top.x * top.x + top.z * top.z)));
+      }
+    }
     const r = this.sun.getTransform().getWorldScale().x * 0.5;
     const rad = Math.PI / 180;
     const clear = topElev + Math.asin(Math.min(r / d, 1)) + DISC_CLEAR_DEG * rad;
