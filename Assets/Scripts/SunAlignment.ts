@@ -12,10 +12,18 @@
  * shaft from the doorway towards the sun. Both scale smoothly with closeness; nothing flashes.
  *
  * The visible disc is separate from the light. The key light stays on the temple -> viewer
- * line; the disc keeps the same azimuth but is raised so it sits above the façade's top edge
- * in the viewer's view (re-placed every frame, also after lock), never over the doorway. It
- * dims as the score rises and settles to a soft glow at lock, so the shaft (disc -> doorway)
- * and the reveal carry the moment.
+ * line. Before lock the disc sits on the line from the viewer's head towards the ray's entry
+ * point in the doorway, as low as it can be while its lower edge clears the façade's top in
+ * the viewer's view, at a comfortable viewing distance and a constant apparent size. So the
+ * shaft (disc -> entry point) and the inside ray (entry point -> sanctuary, SunReveal) meet
+ * at the doorway with the smallest bend the view allows, and from the lock spot they line up
+ * as one ray. At lock the disc and the shaft are fixed in the world. Once the viewer leaves the
+ * lock spot, the sun and the shaft ease once (SUN_EASE_SEC) down onto the straight continuation
+ * of the inside ray, a true low dawn angle, so seen from the side the sun, the doorway and the
+ * statues form one straight line. Whenever the sun would sit in front of the façade in the
+ * viewer's view (back at the lock spot, for example) it fades instead of moving back. The sun
+ * is a layered, camera-facing glow (white-gold core, golden middle, soft amber halo with a slow
+ * shimmer); it dims as the score rises and settles to a soft glow at lock.
  *
  * When the viewer stays inside the tolerance for HOLD_SEC the sun locks, the caption shows
  * for CAPTION_SEC, and "ALIGNED" is logged. The caption appears under the doorway, over the
@@ -45,12 +53,27 @@ const CAPTION_SEC = 4.0;
 /** Distance of the sun (the light) from the temple centre. */
 const SUN_DISTANCE_CM = 60;
 
-/** The visible disc is raised this much above the light's direction, seen from the viewer. */
-const DISC_RAISE_DEG = 12;
+/** Distance (cm) of the disc from the viewer's head: close enough to keep the ray's bend at
+ * the doorway small, far enough to stay comfortable to focus on. */
+const DISC_VIEW_DIST_CM = 40;
+/** Apparent radius of the disc (degrees), kept constant whatever its distance. */
+const DISC_ANGULAR_RADIUS_DEG = 1.8;
 /** Minimum gap between the disc's lower edge and the façade's top edge, seen from the viewer. */
-const DISC_CLEAR_DEG = 3;
-/** Disc size relative to the authored Sun scale. */
-const DISC_SCALE = 0.75;
+const DISC_CLEAR_DEG = 2;
+/** After lock: how far (cm) the head must leave the lock spot before the sun eases onto the ray line. */
+const SUN_LEAVE_CM = 10;
+/** Duration of that one ease (s). */
+const SUN_EASE_SEC = 1.5;
+/** Distance (cm) of the sun from the doorway entry along the outward continuation of the inside ray. */
+const SUN_LINE_DIST_CM = 75;
+/** The façade's front as a rectangle in the temple's own axes (cm): the sun fades when it would cover it. */
+const FACADE_PLANE_Z = 30;
+const FACADE_HALF_W = 19;
+const FACADE_TOP = 25;
+const FACADE_FADE_MARGIN_CM = 4;
+/** Slow shimmer of the sun's halo (fraction and Hz). */
+const SHIMMER_AMOUNT = 0.035;
+const SHIMMER_HZ = 0.37;
 /** Disc brightness when the score reaches 1 (before lock) and once locked. */
 const DISC_ALIGNED_GLOW = 0.4;
 const DISC_LOCKED_GLOW = 0.25;
@@ -66,8 +89,9 @@ const RING_MIN_ALPHA = 0.10;
 const RING_MAX_ALPHA = 0.85;
 /** Light shaft opacity when fully aligned. */
 const SHAFT_MAX_ALPHA = 0.45;
-/** Shaft width (cm) when fully aligned; it narrows as alignment is lost. */
-const SHAFT_WIDTH_CM = 4;
+/** Shaft width (cm) when fully aligned (the inside ray starts at the same width); it narrows
+ * as alignment is lost. */
+export const SHAFT_WIDTH_CM = 3;
 
 const CAPTION_LOCKED = 'Now walk to the side\nand look inside.';
 /** Arrows on the lock caption point at most this far above or below horizontal. */
@@ -119,6 +143,11 @@ export class SunAlignment extends BaseScriptComponent {
   @input('vec3', '{0, 10, 0}')
   centreOffset: vec3;
 
+  /** Where the sun ray enters: a point in the doorway opening, in cm along the temple's own axes.
+   * The outside shaft ends here and SunReveal's inside ray starts here. */
+  @input('vec3', '{0, 4, 23.7}')
+  rayEntryOffset: vec3;
+
   /** Offset of the entrance (doorway at floor level) from the temple pivot, in cm along the temple's own axes. */
   @input('vec3', '{0, 1, 39}')
   entranceOffset: vec3;
@@ -169,9 +198,18 @@ export class SunAlignment extends BaseScriptComponent {
 
   private sunPos: vec3 | null = null;
   private discPos: vec3 | null = null;
-  private discPass: Pass | null = null;
-  private discBaseColor: vec4 | null = null;
+  private discPasses: Pass[] = [];
+  private discBaseColors: vec4[] = [];
+  private sunHalo: SceneObject | null = null;
+  private haloBaseScale: vec3 | null = null;
+  private lockHead: vec3 | null = null;
+  private lockDiscPos: vec3 | null = null;
+  private rayTarget: vec3 | null = null;
+  private sunEase = -1;
+  private shimmerT = 0;
   private discGlow = 1;
+  private discVisible = 1;
+  private shaftBoost = 0;
   private holdTimer = 0;
   private captionTimer = 0;
   private locked = false;
@@ -243,7 +281,22 @@ export class SunAlignment extends BaseScriptComponent {
     return this.sunPos ? this.sunPos : this.sun.getTransform().getWorldPosition();
   }
 
-  /** Where the visible disc is drawn (raised above the façade in the viewer's view). */
+  /** World position of the ray's entry point in the doorway (the join of shaft and inside ray). */
+  getRayEntry(): vec3 {
+    return this.templePoint(this.rayEntryOffset);
+  }
+
+  /** The inside ray's end point (set by SunReveal): the sun's line continues it outwards. */
+  setRayTarget(target: vec3) {
+    this.rayTarget = target;
+  }
+
+  /** After lock, raises the shaft from its cue brightness (0) to full ray brightness (1). */
+  setShaftBoost(k: number) {
+    this.shaftBoost = this.clamp(k, 0, 1);
+  }
+
+  /** Where the visible disc is drawn (above the façade in the viewer's view). */
   getDiscPosition(): vec3 {
     return this.discPos ? this.discPos : this.sun.getTransform().getWorldPosition();
   }
@@ -253,8 +306,13 @@ export class SunAlignment extends BaseScriptComponent {
     this.locked = false;
     this.holdTimer = 0;
     this.captionTimer = 0;
+    this.discPos = null;
+    this.lockHead = null;
+    this.lockDiscPos = null;
+    this.sunEase = -1;
     this.ringFade = 1;
     this.shaftFade = 1;
+    this.shaftBoost = 0;
     if (this.caption) this.caption.enabled = false;
   }
 
@@ -270,10 +328,15 @@ export class SunAlignment extends BaseScriptComponent {
       print('SunAlignment: camera, temple and sun must be assigned');
     } else {
       this.cameraComp = this.camera.getComponent('Component.Camera') as Camera | null;
-      const st = this.sun.getTransform();
-      st.setLocalScale(st.getLocalScale().uniformScale(DISC_SCALE));
-      this.discPass = this.passOf(this.sun);
-      if (this.discPass) this.discBaseColor = this.discPass.baseColor as vec4;
+      this.discPasses = this.collectPasses(this.sun);
+      this.discBaseColors = this.discPasses.map((p) => p.baseColor as vec4);
+      for (let i = 0; i < this.sun.getChildrenCount(); i++) {
+        const c = this.sun.getChild(i);
+        if (c.name === 'Sun Halo') {
+          this.sunHalo = c;
+          this.haloBaseScale = c.getTransform().getLocalScale();
+        }
+      }
     }
     if (this.captionArrow) this.buildArrow(this.captionArrow);
     this.setAlpha(this.ringPass, RING_MIN_ALPHA);
@@ -304,10 +367,14 @@ export class SunAlignment extends BaseScriptComponent {
     }
     // The disc is re-placed every frame, also after lock (the light stays frozen): standing up
     // or walking round must never bring it down over the façade or the doorway.
-    if (this.sunPos) {
-      this.discPos = this.raisedDisc(head, this.sunPos);
-      this.sun.getTransform().setWorldPosition(this.discPos);
+    if (!this.locked || !this.discPos) {
+      this.discPos = this.placeDisc(head);
+    } else {
+      this.easeSunOntoRay(head, dt);
     }
+    const visTarget = this.locked ? this.facadeClearance(head) : 1;
+    this.discVisible += (visTarget - this.discVisible) * (1 - Math.exp(-8 * dt));
+    this.faceHead(head);
 
     // --- Alignment measure ---
     const axis = this.getAxis();
@@ -340,10 +407,11 @@ export class SunAlignment extends BaseScriptComponent {
     // --- Cues ---
     const cue = this.locked ? 1 : score;
     this.setAlpha(this.ringPass, (RING_MIN_ALPHA + (RING_MAX_ALPHA - RING_MIN_ALPHA) * cue) * this.ringFade);
-    this.placeShaft(entrance, this.getDiscPosition(), cue * this.shaftFade);
+    this.placeShaft(this.getRayEntry(), this.getDiscPosition(), cue);
     const glow = this.locked ? DISC_LOCKED_GLOW : 1 - (1 - DISC_ALIGNED_GLOW) * score;
     this.discGlow += (glow - this.discGlow) * (1 - Math.exp(-DISC_GLOW_SMOOTHING * dt));
-    this.setDiscGlow(this.discGlow);
+    this.shimmerT += dt;
+    this.setDiscGlow(this.discGlow * this.discVisible);
 
     // --- Lock ---
     if (!this.locked) {
@@ -363,6 +431,9 @@ export class SunAlignment extends BaseScriptComponent {
 
   private lock(head: vec3, entrance: vec3) {
     this.locked = true;
+    this.lockHead = head;
+    this.lockDiscPos = this.discPos;
+    this.sunEase = -1;
     this.captionTimer = CAPTION_SEC;
     if (this.captionText) this.captionText.text = CAPTION_LOCKED;
     if (this.caption) {
@@ -408,7 +479,8 @@ export class SunAlignment extends BaseScriptComponent {
 
   private placeShaft(from: vec3, to: vec3, cue: number) {
     if (!this.shaft) return;
-    const alpha = SHAFT_MAX_ALPHA * cue * cue;
+    const cueAlpha = SHAFT_MAX_ALPHA * cue * cue;
+    const alpha = (this.locked ? cueAlpha + (1 - cueAlpha) * this.shaftBoost : cueAlpha) * this.shaftFade;
     this.setShaftGlow(alpha);
     this.shaft.enabled = alpha > 0.01;
     if (!this.shaft.enabled) return;
@@ -450,17 +522,29 @@ export class SunAlignment extends BaseScriptComponent {
   }
 
   /**
-   * The visible disc: same azimuth and distance from the viewer as the light, raised by
-   * DISC_RAISE_DEG, and further if needed so its lower edge clears the façade's top as seen
-   * from the head: the highest of six points on the front and back top edges (seen from
-   * above, the back edge is the visible top).
+   * Places the visible disc on the line from the head towards the ray's entry point, at
+   * DISC_VIEW_DIST_CM, as low as possible: its lower edge clears the façade's top as seen from
+   * the head (the highest of six points on the front and back top edges; seen from above, the
+   * back edge is the visible top) by DISC_CLEAR_DEG. Its size keeps a constant apparent radius.
    */
-  private raisedDisc(head: vec3, light: vec3): vec3 {
-    const v = light.sub(head);
-    const d = v.length;
-    const flat = new vec3(v.x, 0, v.z);
-    const fl = flat.length;
-    if (d < 0.001 || fl < 0.001) return light;
+  private placeDisc(head: vec3): vec3 {
+    const rad = Math.PI / 180;
+    const d = DISC_VIEW_DIST_CM;
+    const r = d * Math.tan(DISC_ANGULAR_RADIUS_DEG * rad);
+    const toEntry = this.getRayEntry().sub(head);
+    let flat = new vec3(toEntry.x, 0, toEntry.z);
+    flat = flat.length > 0.001 ? flat.normalize() : this.getAxis().uniformScale(-1);
+    const e = this.facadeTopElevation(head) + Math.asin(r / d) + DISC_CLEAR_DEG * rad;
+    const p = head.add(flat.uniformScale(d * Math.cos(e))).add(vec3.up().uniformScale(d * Math.sin(e)));
+    const t = this.sun.getTransform();
+    t.setWorldPosition(p);
+    t.setWorldScale(vec3.one().uniformScale(2 * r));
+    return p;
+  }
+
+  /** Highest elevation (radians) of the façade top seen from the head: six points on the front
+   * and back top edges (seen from above, the back edge is the visible top). */
+  private facadeTopElevation(head: vec3): number {
     let topElev = -Math.PI / 2;
     for (const dz of [0, -this.facadeTopDepthCm]) {
       for (const dx of [-this.facadeTopHalfWidthCm, 0, this.facadeTopHalfWidthCm]) {
@@ -468,18 +552,69 @@ export class SunAlignment extends BaseScriptComponent {
         topElev = Math.max(topElev, Math.atan2(top.y, Math.sqrt(top.x * top.x + top.z * top.z)));
       }
     }
-    const r = this.sun.getTransform().getWorldScale().x * 0.5;
-    const rad = Math.PI / 180;
-    const clear = topElev + Math.asin(Math.min(r / d, 1)) + DISC_CLEAR_DEG * rad;
-    const e = Math.max(Math.atan2(v.y, fl) + DISC_RAISE_DEG * rad, clear);
-    return head.add(flat.uniformScale((d * Math.cos(e)) / fl)).add(vec3.up().uniformScale(d * Math.sin(e)));
+    return topElev;
+  }
+
+  /** The sun's place on the straight outward continuation of the inside ray (the dawn line). */
+  private sunLinePosition(): vec3 {
+    const entry = this.getRayEntry();
+    const inward = this.rayTarget ? this.rayTarget.sub(entry).normalize() : this.getAxis().uniformScale(-1);
+    return entry.sub(inward.uniformScale(SUN_LINE_DIST_CM));
+  }
+
+  /** After lock: once the head leaves the lock spot, ease the sun once onto the dawn line. */
+  private easeSunOntoRay(head: vec3, dt: number) {
+    if (!this.lockHead || !this.lockDiscPos) return;
+    if (this.sunEase < 0 && head.distance(this.lockHead) > SUN_LEAVE_CM) this.sunEase = 0;
+    if (this.sunEase < 0 || this.sunEase >= 1) return;
+    this.sunEase = Math.min(this.sunEase + dt / SUN_EASE_SEC, 1);
+    const k = this.sunEase * this.sunEase * (3 - 2 * this.sunEase);
+    this.discPos = vec3.lerp(this.lockDiscPos, this.sunLinePosition(), k);
+    this.sun.getTransform().setWorldPosition(this.discPos);
+  }
+
+  /**
+   * 1 unless the sun would sit in front of the façade in the viewer's view: the view ray from the
+   * head through the sun, continued, hits the façade's front rectangle beyond the sun. Eases to 0
+   * over FACADE_FADE_MARGIN_CM on that plane, so the sun never covers the façade or the doorway.
+   */
+  private facadeClearance(head: vec3): number {
+    if (!this.discPos) return 1;
+    const inv = this.temple.getTransform().getWorldRotation().invert();
+    const origin = this.temple.getTransform().getWorldPosition();
+    const h = inv.multiplyVec3(head.sub(origin));
+    const sp = inv.multiplyVec3(this.discPos.sub(origin));
+    if (h.z <= FACADE_PLANE_Z || Math.abs(sp.z - h.z) < 0.001) return 1;
+    const t = (FACADE_PLANE_Z - h.z) / (sp.z - h.z);
+    if (t < 1) return 1;                       // the façade plane lies before the sun: it hides the sun itself
+    const q = h.add(sp.sub(h).uniformScale(t));
+    const outside = Math.max(Math.abs(q.x) - FACADE_HALF_W, q.y - FACADE_TOP, -q.y);
+    const u = this.clamp(outside / FACADE_FADE_MARGIN_CM, 0, 1);
+    return u * u * (3 - 2 * u);
+  }
+
+  /** The sun's glow quads face the viewer at a constant apparent size; the halo breathes slowly. */
+  private faceHead(head: vec3) {
+    const t = this.sun.getTransform();
+    const d = head.sub(t.getWorldPosition());
+    if (d.length > 0.001) {
+      t.setWorldRotation(quat.lookAt(d.normalize(), vec3.up()));
+      t.setWorldScale(vec3.one().uniformScale(2 * d.length * Math.tan((DISC_ANGULAR_RADIUS_DEG * Math.PI) / 180)));
+    }
+    if (this.sunHalo && this.haloBaseScale) {
+      const k = 1 + SHIMMER_AMOUNT * Math.sin(this.shimmerT * 2 * Math.PI * SHIMMER_HZ);
+      this.sunHalo.getTransform().setLocalScale(this.haloBaseScale.uniformScale(k));
+    }
   }
 
   /** The disc material is additive, so brightness scales the base colour (as for the shaft). */
   private setDiscGlow(k: number) {
-    if (!this.discPass || !this.discBaseColor) return;
-    const b = this.discBaseColor;
-    this.discPass.baseColor = new vec4(b.x * k, b.y * k, b.z * k, b.w);
+    const shimmer = 1 + SHIMMER_AMOUNT * Math.sin(this.shimmerT * 2 * Math.PI * SHIMMER_HZ * 1.3 + 1.0);
+    for (let i = 0; i < this.discPasses.length; i++) {
+      const b = this.discBaseColors[i];
+      const g = k * shimmer;
+      this.discPasses[i].baseColor = new vec4(b.x * g, b.y * g, b.z * g, b.w);
+    }
   }
 
   /** A flat arrow pointing along local +X, one unit long, in the local XY plane. */

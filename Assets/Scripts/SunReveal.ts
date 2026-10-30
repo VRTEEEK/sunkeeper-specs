@@ -1,9 +1,17 @@
 /**
  * SunReveal — milestone 5: the revelation.
  *
- * Listens for SunAlignment's lock. After the caption time the light enters the doorway
- * and travels down the temple axis to the sanctuary: a warm patch on the floor with a
- * soft, additive shaft extending behind it to the doorway. When the light arrives the
+ * Listens for SunAlignment's lock. The sun's ray is one unbroken line: SunAlignment's shaft
+ * runs from the disc to the ray's entry point in the doorway, and from there this script
+ * grows the inside ray down the temple axis to the three lit statues. The ray grows from the
+ * doorway and stays lit behind its tip (nothing travels away leaving darkness), with a lit
+ * strip on the floor under it and a soft glow where the light enters the doorway. It widens
+ * a little on its way, so at the end it covers exactly the three lit statues and not Ptah.
+ * As the ray starts, the outside shaft is brought up to the same brightness. The ray is a soft
+ * wide layer plus a narrow bright core (two crossed pairs of quads, additive, low overdraw).
+ * The light falls on the statues rather than making them glow: a warm spotlight from the doorway
+ * covers exactly the three lit statues (never Ptah) and rises with them in order, with a gentle
+ * gold tint and emissive, a faint rim halo and a floor pool. When the light arrives the
  * sanctuary statues ease up one by one, in the order given by `statueOrder`: the emissive
  * rises, the base colour shifts from sandstone toward gold, a soft additive halo card
  * glows behind the statue and a small warm pool lights the floor in front of it (all on
@@ -16,7 +24,7 @@
  * The actual times are printed when `debugLog` is on and once at completion.
  */
 
-import { SunAlignment } from './SunAlignment';
+import { SunAlignment, SHAFT_WIDTH_CM } from './SunAlignment';
 import { InteriorLift } from './InteriorLift';
 
 // ---------------------------------------------------------------------------
@@ -25,7 +33,7 @@ import { InteriorLift } from './InteriorLift';
 
 /** Delay from lock to the light entering the doorway (the "stand up" caption time). */
 const START_DELAY_SEC = 2.0;
-/** Travel time of the light patch from the doorway to the sanctuary. */
+/** Time the ray takes to grow from the doorway to the sanctuary. */
 const TRAVEL_SEC = 8.0;
 /** Beam fade-in at the start of the travel. */
 const BEAM_FADE_IN_SEC = 0.6;
@@ -35,6 +43,22 @@ const STATUE_GAP_SEC = 0.8;
 const STATUE_RISE_SEC = 1.0;
 /** The floor ring fades out over this time once the beam starts. */
 const RING_FADE_SEC = 1.5;
+/** The doorway glow rises over this time from lock (the shaft reaches the door at lock). */
+const DOOR_GLOW_SEC = 0.6;
+/** Brightness of the floor strip relative to the ray. */
+const FLOOR_STRIP_GLOW = 0.7;
+/** The floor strip sits this far above the floor (cm) so it never z-fights with it. */
+const FLOOR_STRIP_LIFT_CM = 0.12;
+/** Width of the ray's bright core relative to the ray. */
+const RAY_CORE_WIDTH = 0.35;
+/** Halo cards are only a faint rim; the floor pools stay a little stronger. */
+const HALO_LEVEL = 0.3;
+const POOL_LEVEL = 0.8;
+/** Spotlight on the lit statues: peak intensity and the cone's soft edge (inner = outer x this). */
+const SPOT_INTENSITY = 6.0;
+const SPOT_INNER_RATIO = 0.6;
+/** Peak intensity of the sanctuary's warm fill. */
+const WARM_INTENSITY = 1.6;
 
 // ---------------------------------------------------------------------------
 
@@ -58,27 +82,41 @@ export class SunReveal extends BaseScriptComponent {
   /** The interior lift script: owns the statue materials and the base emissive. */
   @input lift: InteriorLift;
 
-  /** Beam root: two crossed unit quads as children; +Z runs along the beam. Scaled (w, w, length). */
+  /** Beam root with two children (RenderMeshVisual + soft-edged additive material): the first
+   * becomes the floor strip, the second the ray. Their meshes are built here, in world space. */
   @input beam: SceneObject;
 
-  /** Flat unit quad with the soft patch texture, moved along the floor. */
-  @input lightPatch: SceneObject;
+  /** Soft radial glow card (unit plane, additive) placed at the ray's entry point in the doorway. */
+  @input doorwayGlow: SceneObject;
 
-  /** Where the light enters: the doorway sill, in cm along the temple's own axes. */
+  /** The doorway sill (start of the floor strip), in cm along the temple's own axes. */
   @input('vec3', '{0, 1.7, 23.7}')
   doorwayOffset: vec3;
 
-  /** Where the light stops: the sanctuary floor in front of the statues, temple axes. */
-  @input('vec3', '{0, 1.7, -32}')
-  sanctuaryOffset: vec3;
-
-  /** Beam width (cm), about the doorway width. */
+  /** Height (cm above the statues' base) where the ray meets the lit statues: about chest height. */
   @input
-  beamWidth: number = 3;
+  rayTargetHeight: number = 2.2;
 
-  /** Length of the floor patch along the axis (cm). */
+  /** Width (cm) of one statue, added to the spread of the lit statues for the ray's end width. */
   @input
-  patchLength: number = 7;
+  statueWidth: number = 1.6;
+
+  /** Diameter (cm) of the doorway glow. */
+  @input
+  doorwayGlowSize: number = 7;
+
+  /** Warm spotlight that falls on the lit statues (a Spot LightSource), aimed from the doorway. */
+  @input('Component.LightSource')
+  @allowUndefined
+  sanctuaryLight: LightSource;
+
+  /**
+   * Optional warm fill (a point light in the sanctuary, on the interior light layer only, Ptah's
+   * layer excluded): the sanctuary warms gradually as the statues light. Off before the reveal.
+   */
+  @input('Component.LightSource')
+  @allowUndefined
+  sanctuaryWarm: LightSource;
 
   /** Statues in lighting order (names of the temple objects). Ptah is never listed. */
   @input
@@ -126,6 +164,7 @@ export class SunReveal extends BaseScriptComponent {
   private fadeLeft = 0;
   private fadeFromStatues: number[] = [];
   private fadeFromGlow = 0;
+  private fadeFromDoor = 0;
   private t = 0;
   private lockTime = 0;
   private loggedPhases: { [phase: string]: boolean } = {};
@@ -133,8 +172,17 @@ export class SunReveal extends BaseScriptComponent {
 
   private beamPasses: Pass[] = [];
   private beamBase: vec4[] = [];
-  private patchPasses: Pass[] = [];
-  private patchBase: vec4[] = [];
+  private doorPasses: Pass[] = [];
+  private doorBase: vec4[] = [];
+  private stripPasses: Pass[] = [];
+  private stripBase: vec4[] = [];
+  private rayMesh: MeshBuilder | null = null;
+  private stripMesh: MeshBuilder | null = null;
+  private rayObj: SceneObject | null = null;
+  private stripObj: SceneObject | null = null;
+  private rayTarget: vec3 | null = null;
+  private rayEndWidth = 5;
+  private litNow: { [name: string]: number } = {};
   private statues: StatueEntry[] = [];
   private glowPlaced = false;
 
@@ -161,7 +209,8 @@ export class SunReveal extends BaseScriptComponent {
   fadeOut(sec: number) {
     if (this.fading) return;
     this.fadeFromStatues = this.statues.map((s) => this.litFraction(s));
-    this.fadeFromGlow = this.t >= START_DELAY_SEC ? 1 : 0;
+    this.fadeFromGlow = this.clamp((this.t - START_DELAY_SEC) / BEAM_FADE_IN_SEC, 0, 1);
+    this.fadeFromDoor = this.clamp(this.t / DOOR_GLOW_SEC, 0, 1);
     this.running = false;
     this.fading = true;
     this.fadeSec = Math.max(sec, 0.01);
@@ -176,28 +225,45 @@ export class SunReveal extends BaseScriptComponent {
     this.pendingBegin = false;
     this.t = 0;
     this.loggedPhases = {};
-    this.setGlow(this.beamPasses, this.beamBase, 0);
-    this.setGlow(this.patchPasses, this.patchBase, 0);
+    this.setRayGlow(0, 0);
     if (this.beam) this.beam.enabled = false;
-    if (this.lightPatch) this.lightPatch.enabled = false;
+    if (this.doorwayGlow) this.doorwayGlow.enabled = false;
     const base = this.lift ? this.lift.getEmissive() : new vec3(0.14, 0.11, 0.07);
     for (const s of this.statues) this.setStatueLit(s, base, 0);
     if (this.alignment) this.alignment.setCueFade(1, 1);
   }
 
   private start() {
-    if (!this.alignment || !this.lift || !this.beam || !this.lightPatch) {
-      print('SunReveal: alignment, lift, beam and lightPatch must be assigned');
+    if (!this.alignment || !this.lift || !this.beam || !this.doorwayGlow || this.beam.getChildrenCount() < 2) {
+      print('SunReveal: alignment, lift, beam (with two children) and doorwayGlow must be assigned');
       return;
     }
-    this.beamPasses = this.collectPasses(this.beam);
+    // The meshes are written in world space, so the beam and its children carry no transform.
+    for (const o of [this.beam, this.beam.getChild(0), this.beam.getChild(1)]) {
+      const tr = o.getTransform();
+      if (o === this.beam) {
+        tr.setWorldPosition(vec3.zero());
+        tr.setWorldRotation(quat.quatIdentity());
+        tr.setWorldScale(vec3.one());
+      } else {
+        tr.setLocalPosition(vec3.zero());
+        tr.setLocalRotation(quat.quatIdentity());
+        tr.setLocalScale(vec3.one());
+      }
+    }
+    this.stripObj = this.beam.getChild(0);
+    this.rayObj = this.beam.getChild(1);
+    this.stripMesh = this.makeQuadsMesh(this.stripObj, 1);
+    this.rayMesh = this.makeQuadsMesh(this.rayObj, 4);
+    this.stripPasses = this.collectPasses(this.stripObj);
+    this.stripBase = this.stripPasses.map((p) => p.baseColor as vec4);
+    this.beamPasses = this.collectPasses(this.rayObj);
     this.beamBase = this.beamPasses.map((p) => p.baseColor as vec4);
-    this.patchPasses = this.collectPasses(this.lightPatch);
-    this.patchBase = this.patchPasses.map((p) => p.baseColor as vec4);
-    this.setGlow(this.beamPasses, this.beamBase, 0);
-    this.setGlow(this.patchPasses, this.patchBase, 0);
+    this.doorPasses = this.collectPasses(this.doorwayGlow);
+    this.doorBase = this.doorPasses.map((p) => p.baseColor as vec4);
+    this.setRayGlow(0, 0);
     this.beam.enabled = false;
-    this.lightPatch.enabled = false;
+    this.doorwayGlow.enabled = false;
     this.statues = this.statueOrder
       .split(',')
       .map((s) => s.trim())
@@ -253,8 +319,8 @@ export class SunReveal extends BaseScriptComponent {
       const f = this.clamp(this.fadeLeft / this.fadeSec, 0, 1);
       const base = this.lift.getEmissive();
       for (let i = 0; i < this.statues.length; i++) this.setStatueLit(this.statues[i], base, this.fadeFromStatues[i] * f);
-      this.setGlow(this.beamPasses, this.beamBase, this.fadeFromGlow * f);
-      this.setGlow(this.patchPasses, this.patchBase, this.fadeFromGlow * f);
+      this.setRayGlow(this.fadeFromGlow * f, this.fadeFromDoor * f);
+      this.alignment.setShaftBoost(this.fadeFromGlow * f);
       if (f <= 0) {
         this.reset();
         if (this.pendingBegin) {
@@ -272,20 +338,17 @@ export class SunReveal extends BaseScriptComponent {
     }
     const t = this.t;
 
-    // --- Beam and floor patch ---
+    // --- The ray: doorway glow from lock, then the inside ray grows to the statues ---
     const travel = this.clamp((t - START_DELAY_SEC) / TRAVEL_SEC, 0, 1);
     const started = t >= START_DELAY_SEC;
     const glow = this.clamp((t - START_DELAY_SEC) / BEAM_FADE_IN_SEC, 0, 1);
+    const door = this.clamp(t / DOOR_GLOW_SEC, 0, 1);
+    this.placeDoorwayGlow();
     this.beam.enabled = started;
-    this.lightPatch.enabled = started;
+    this.setRayGlow(glow, door);
+    this.alignment.setShaftBoost(glow);
     if (started) {
-      const doorway = this.alignment.templePoint(this.doorwayOffset);
-      const sanctuary = this.alignment.templePoint(this.sanctuaryOffset);
-      const head = vec3.lerp(doorway, sanctuary, this.smooth(travel));
-      this.placeBeam(doorway, head);
-      this.placePatch(head, sanctuary.sub(doorway).normalize());
-      this.setGlow(this.beamPasses, this.beamBase, glow);
-      this.setGlow(this.patchPasses, this.patchBase, glow);
+      this.placeRay(this.smooth(travel));
       // The floor ring has done its job: fade it while the light travels.
       const ringFade = 1 - this.clamp((t - START_DELAY_SEC) / RING_FADE_SEC, 0, 1);
       this.alignment.setCueFade(ringFade, 1);
@@ -315,22 +378,134 @@ export class SunReveal extends BaseScriptComponent {
 
   // --- placement ---
 
-  private placeBeam(from: vec3, to: vec3) {
-    const seg = to.sub(from);
-    const len = Math.max(seg.length, 0.5);
-    const w = this.beamWidth;
-    const tr = this.beam.getTransform();
-    // Parent sits half a width above the floor so the vertical quad stands on it.
-    tr.setWorldPosition(from.add(seg.uniformScale(0.5)).add(new vec3(0, w * 0.5, 0)));
-    tr.setWorldRotation(quat.lookAt(seg.normalize(), vec3.up()));
-    tr.setLocalScale(new vec3(w, w, len));
+  /** A mesh of `quads` quads (4 vertices each, position + normal + uv), filled in by setQuad. */
+  private makeQuadsMesh(obj: SceneObject, quads: number): MeshBuilder | null {
+    const rmv = obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null;
+    if (!rmv) return null;
+    const mb = new MeshBuilder([
+      { name: 'position', components: 3 },
+      { name: 'normal', components: 3 },
+      { name: 'texture0', components: 2 },
+    ]);
+    mb.topology = MeshTopology.Triangles;
+    mb.indexType = MeshIndexType.UInt16;
+    const verts: number[] = [];
+    const idx: number[] = [];
+    for (let q = 0; q < quads; q++) {
+      for (const uv of [[0, 0], [1, 0], [1, 1], [0, 1]]) verts.push(0, 0, 0, 0, 1, 0, uv[0], uv[1]);
+      const b = q * 4;
+      idx.push(b, b + 1, b + 2, b, b + 2, b + 3);
+    }
+    mb.appendVerticesInterleaved(verts);
+    mb.appendIndices(idx);
+    mb.updateMesh();
+    rmv.mesh = mb.getMesh();
+    return mb;
   }
 
-  private placePatch(at: vec3, along: vec3) {
-    const tr = this.lightPatch.getTransform();
-    tr.setWorldPosition(at.add(new vec3(0, 0.25, 0)));
-    tr.setWorldRotation(quat.lookAt(along, vec3.up()));
-    tr.setLocalScale(new vec3(this.beamWidth * 1.8, 1, this.patchLength));
+  /** Quad q from a (start) to b (end): half-widths ha / hb along `side`. u runs across, v along. */
+  private setQuad(mb: MeshBuilder, q: number, a: vec3, b: vec3, side: vec3, ha: number, hb: number, n: vec3) {
+    const pts = [a.sub(side.uniformScale(ha)), a.add(side.uniformScale(ha)), b.add(side.uniformScale(hb)), b.sub(side.uniformScale(hb))];
+    const uvs = [[0, 0], [1, 0], [1, 1], [0, 1]];
+    for (let i = 0; i < 4; i++) {
+      mb.setVertexInterleaved(q * 4 + i, [pts[i].x, pts[i].y, pts[i].z, n.x, n.y, n.z, uvs[i][0], uvs[i][1]]);
+    }
+  }
+
+  /**
+   * The inside ray from the entry point to `grow` (0..1) of the way to the statues: two crossed
+   * quads, widening from the shaft's width to the lit statues' spread; and the floor strip
+   * under it from the sill to below the ray's tip.
+   */
+  private placeRay(grow: number) {
+    if (!this.rayMesh || !this.stripMesh || !this.rayTarget) return;
+    const from = this.alignment.getRayEntry();
+    const tip = vec3.lerp(from, this.rayTarget, Math.max(grow, 0.01));
+    const dir = this.rayTarget.sub(from).normalize();
+    const side = dir.cross(vec3.up()).normalize();
+    const upv = side.cross(dir).normalize();
+    const w0 = SHAFT_WIDTH_CM;
+    const wTip = w0 + (this.rayEndWidth - w0) * grow;
+    this.setQuad(this.rayMesh, 0, from, tip, side, w0 / 2, wTip / 2, upv);
+    this.setQuad(this.rayMesh, 1, from, tip, upv, w0 / 2, w0 / 2, side);
+    const c = RAY_CORE_WIDTH;
+    this.setQuad(this.rayMesh, 2, from, tip, side, (w0 * c) / 2, (wTip * c) / 2, upv);
+    this.setQuad(this.rayMesh, 3, from, tip, upv, (w0 * c) / 2, (w0 * c) / 2, side);
+    this.rayMesh.updateMesh();
+    const floorY = this.alignment.templePoint(this.doorwayOffset).y + FLOOR_STRIP_LIFT_CM;
+    const sill = this.alignment.templePoint(this.doorwayOffset);
+    const a = new vec3(sill.x, floorY, sill.z);
+    const b = new vec3(tip.x, floorY, tip.z);
+    const flatSide = b.sub(a).cross(vec3.up()).normalize();
+    this.setQuad(this.stripMesh, 0, a, b, flatSide, w0 * 0.45, wTip * 0.45, vec3.up());
+    this.stripMesh.updateMesh();
+  }
+
+  /** The soft glow where the light enters: at the entry point, facing out of the doorway. */
+  private placeDoorwayGlow() {
+    const tr = this.doorwayGlow.getTransform();
+    const axis = this.alignment.getAxis();
+    tr.setWorldPosition(this.alignment.getRayEntry().add(axis.uniformScale(0.3)));
+    tr.setWorldRotation(quat.lookAt(vec3.up(), axis));
+    tr.setWorldScale(new vec3(this.doorwayGlowSize, 1, this.doorwayGlowSize));
+  }
+
+  /** Ray (and shaft-matched) brightness, floor strip at FLOOR_STRIP_GLOW of it, doorway glow. */
+  private setRayGlow(ray: number, door: number) {
+    this.setGlow(this.beamPasses, this.beamBase, ray);
+    this.setGlow(this.stripPasses, this.stripBase, ray * FLOOR_STRIP_GLOW);
+    this.setGlow(this.doorPasses, this.doorBase, door);
+    if (this.doorwayGlow) this.doorwayGlow.enabled = door > 0.001;
+  }
+
+  /**
+   * Where the ray ends: in front of the lit statues (their centres averaged), at chest height,
+   * and its end width: their spread across the axis plus one statue, so it touches all three
+   * lit statues and stops short of Ptah.
+   */
+  private placeRayTarget() {
+    const fwd = this.alignment.templeToWorld(new vec3(0, 0, 1));
+    const side = this.alignment.templeToWorld(new vec3(1, 0, 0));
+    let sum = vec3.zero();
+    let lo = Number.MAX_VALUE;
+    let hi = -Number.MAX_VALUE;
+    let base = Number.MAX_VALUE;
+    let n = 0;
+    for (const s of this.statues) {
+      const obj = this.lift.getObject(s.name);
+      const rmv = obj ? (obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null) : null;
+      if (!rmv) continue;
+      const c = rmv.worldAabbMin().add(rmv.worldAabbMax()).uniformScale(0.5);
+      sum = sum.add(c);
+      lo = Math.min(lo, c.dot(side));
+      hi = Math.max(hi, c.dot(side));
+      base = Math.min(base, rmv.worldAabbMin().y);
+      n++;
+    }
+    if (n === 0) return;
+    const c = sum.uniformScale(1 / n);
+    const front = c.add(fwd.uniformScale(this.statueDepth * 0.5));
+    this.rayTarget = new vec3(front.x, base + this.rayTargetHeight, front.z);
+    this.rayEndWidth = hi - lo + this.statueWidth;
+    this.alignment.setRayTarget(this.rayTarget);
+    this.placeSpot();
+  }
+
+  private litFractionNow(s: StatueEntry): number {
+    return this.litNow[s.name] || 0;
+  }
+
+  /** Aim the spotlight from the doorway entry at the lit statues; its cone just covers them. */
+  private placeSpot() {
+    if (!this.sanctuaryLight || !this.rayTarget) return;
+    const from = this.alignment.getRayEntry();
+    const toTarget = this.rayTarget.sub(from);
+    const tr = this.sanctuaryLight.getSceneObject().getTransform();
+    tr.setWorldPosition(from);
+    tr.setWorldRotation(quat.lookAt(toTarget.normalize(), vec3.up()));
+    const outer = (Math.atan((this.rayEndWidth / 2 + 0.2) / toTarget.length) * 180) / Math.PI;
+    this.sanctuaryLight.outerConeAngleDegrees = outer;
+    this.sanctuaryLight.innerConeAngleDegrees = outer * SPOT_INNER_RATIO;
   }
 
   /** Current lit fraction of a statue in the running sequence (0 = base, 1 = fully lit). */
@@ -342,6 +517,7 @@ export class SunReveal extends BaseScriptComponent {
 
   /** Drive one statue's emissive, gold tint, halo and pool to lit fraction k (0 = base). */
   private setStatueLit(s: StatueEntry, base: vec3, k: number) {
+    this.litNow[s.name] = k;
     if (s.mat) {
       s.mat.mainPass.emissiveFactor = vec3.lerp(base, this.litEmissive, k);
       if (s.baseColor) {
@@ -352,12 +528,31 @@ export class SunReveal extends BaseScriptComponent {
     }
     if (s.halo) s.halo.enabled = k > 0;
     if (s.pool) s.pool.enabled = k > 0;
-    this.setGlow(s.haloPasses, s.haloBase, k);
-    this.setGlow(s.poolPasses, s.poolBase, k);
+    this.setGlow(s.haloPasses, s.haloBase, k * HALO_LEVEL);
+    this.setGlow(s.poolPasses, s.poolBase, k * POOL_LEVEL);
+    this.updateSpot();
+  }
+
+  /** The spotlight follows the statues' lit fractions (so it rises in their order). */
+  private updateSpot() {
+    let sum = 0;
+    for (const st of this.statues) sum += this.litFractionNow(st);
+    const k = this.statues.length > 0 ? sum / this.statues.length : 0;
+    if (this.sanctuaryLight) {
+      this.sanctuaryLight.intensity = SPOT_INTENSITY * k;
+      this.sanctuaryLight.getSceneObject().enabled = k > 0.001;
+    }
+    if (this.sanctuaryWarm) {
+      // eased so the room warms after the statues catch the light, not in step with them
+      const w = k * k * (3 - 2 * k);
+      this.sanctuaryWarm.intensity = WARM_INTENSITY * w;
+      this.sanctuaryWarm.getSceneObject().enabled = w > 0.001;
+    }
   }
 
   /** Put each halo card behind its statue and each pool on the floor in front, from the statue bounds. */
   private placeGlow() {
+    this.placeRayTarget();
     const rot = this.temple().getWorldRotation();
     const fwd = this.alignment.templeToWorld(new vec3(0, 0, 1)); // toward the entrance
     const haloRot = rot.multiply(quat.angleAxis((90 - this.haloTilt) * Math.PI / 180, vec3.right()));

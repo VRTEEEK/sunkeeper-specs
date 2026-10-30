@@ -10,6 +10,7 @@ interior walls) -> weighted decimation protecting the colossi and niche figure -
 scale to the target length, origin at the base centre -> export GLB -> re-import to verify.
 """
 import bpy, bmesh, sys, os, json, math, time
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.dont_write_bytecode = True
 import numpy as np
 from mathutils import Vector, Matrix
 
@@ -17,7 +18,7 @@ argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 builddir, outdir, assetdir = [os.path.abspath(a) for a in argv[:3]]
 TARGET_LEN = float(argv[3]) if len(argv) > 3 else 0.78
 TARGET_TRIS = int(argv[4]) if len(argv) > 4 else 85000
-LEGACY_STATUE_TRIS = 240   # the old block statues' share of TARGET_TRIS
+LEGACY_INTERIOR_TRIS = 888   # interior + block statues of the 28 Oct 2026 build (fixes the facade budget)
 os.makedirs(outdir, exist_ok=True); os.makedirs(assetdir, exist_ok=True)
 T0 = time.time()
 def log(*a): print("[export %5.1fs]" % (time.time() - T0), *a)
@@ -33,10 +34,13 @@ for o in list(bpy.data.objects):
         bpy.data.objects.remove(o)
 
 def tri_count(o): return sum(len(p.vertices) - 2 for p in o.data.polygons)
-def all_pts():
+# the rock mass and facade backing (30 Oct 2026) must not move the temple: the scale and origin are
+# measured on the temple itself, so the facade, doorway and axis keep their Lens positions
+ADDED_ROCK = ("Mountain", "Facade_Backing")
+def all_pts(skip=()):
     out = []
     for o in bpy.data.objects:
-        if o.type != "MESH": continue
+        if o.type != "MESH" or o.name in skip: continue
         co = np.empty(len(o.data.vertices) * 3, dtype=np.float32); o.data.vertices.foreach_get("co", co)
         mw = np.array(o.matrix_world, dtype=np.float64); out.append(co.reshape(-1, 3) @ mw[:3, :3].T + mw[:3, 3])
     return np.concatenate(out)
@@ -119,11 +123,12 @@ def decimate(obj, ratio, invert):
     dg2 = bpy.context.evaluated_depsgraph_get(); ev = obj.evaluated_get(dg2)
     new = bpy.data.meshes.new_from_object(ev, preserve_all_data_layers=True, depsgraph=dg2)
     obj.modifiers.clear(); old = obj.data; obj.data = new; new.name = "Facade"; bpy.data.meshes.remove(old)
-# the sanctuary statues are sculpted and decimated in 02 with their own budget (3-5k each), so they
-# do not eat into the facade's; 648 + 240 keeps the facade budget it had with the old block statues
+# the facade keeps the budget of the 28 Oct 2026 build (TARGET_TRIS minus that build's 888 interior
+# and block-statue triangles), so later interior or statue changes never re-decimate the facade;
+# the sculpted statues (3-5k each) and the interior surfaces are budgeted in 02
 statue_tris = sum(tri_count(o) for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("Statue_"))
 interior_tris = sum(tri_count(o) for o in bpy.data.objects if o.type == "MESH" and o is not facade and not o.name.startswith("Statue_"))
-budget = TARGET_TRIS - interior_tris - LEGACY_STATUE_TRIS
+budget = TARGET_TRIS - LEGACY_INTERIOR_TRIS
 prot0, rest0 = region_counts(facade)
 report["colossi_region_tris_before"] = [prot0, rest0]
 prot_target = int(budget * 0.58); rest_target = budget - prot_target
@@ -196,8 +201,66 @@ for nd in list(nt.nodes):  # remove orphaned separate-colour nodes
 report["textures"] = tex_report
 log("textures", tex_report)
 
+# ---------------------------------------------------------------- 3b. facade: graded colour, baked AO, matte roughness
+import surface_grade as sg
+def img_px(img):
+    w, h = img.size; a = np.empty(w * h * 4, dtype=np.float32); img.pixels.foreach_get(a); return a.reshape(h, w, 4)
+base_node = next(nd for nd in nt.nodes if nd.type == "TEX_IMAGE" and nd.image and nd.image.name == "Temple_BaseColor")
+rough_node = next((nd for nd in nt.nodes if nd.type == "TEX_IMAGE" and nd.image and nd.image.name == "Temple_Roughness"), None)
+W = base_node.image.size[0]
+ao_img = bpy.data.images.new("facade_ao", W, W, float_buffer=True); ao_img.colorspace_settings.name = "Non-Color"
+ao_node = nt.nodes.new("ShaderNodeTexImage"); ao_node.image = ao_img; nt.nodes.active = ao_node
+dummy = bpy.data.images.new("facade_ao_dummy", 64, 64, float_buffer=True)
+for m in facade.data.materials[1:]:
+    if m and m.use_nodes:
+        dn = m.node_tree.nodes.new("ShaderNodeTexImage"); dn.image = dummy; m.node_tree.nodes.active = dn
+for o in bpy.context.view_layer.objects: o.select_set(False)
+facade.select_set(True); bpy.context.view_layer.objects.active = facade
+scene.render.engine = "CYCLES"; scene.cycles.device = "CPU"; scene.cycles.samples = 64
+scene.world.light_settings.distance = 0.05
+scene.render.bake.use_selected_to_active = False; scene.render.bake.margin = 8; scene.render.bake.use_clear = True
+bpy.ops.object.bake(type="AO")
+ao = img_px(ao_img)[..., 0]
+bp = img_px(base_node.image)
+graded = sg.grade(bp[..., :3])
+lin = sg.srgb_to_lin(graded) * sg.ao_factor(ao)[..., None]
+bp[..., :3] = sg.lin_to_srgb(lin)
+out_img = bpy.data.images.new("Temple_BaseColor_graded", W, W, alpha=False, float_buffer=False)
+out_img.pixels.foreach_set(bp.astype(np.float32).ravel())
+base_path = base_node.image.filepath_raw or os.path.join(texdir, "Temple_BaseColor.jpg")
+out_img.file_format = "JPEG"; out_img.save(filepath=bpy.path.abspath(base_path), quality=90)
+base_node.image.reload()
+report["facade_grade"] = {"mean_luminance_after": round(float(sg.luminance(bp[..., :3]).mean()), 3), "ao_mean": round(float(ao.mean()), 3)}
+nt.nodes.remove(ao_node); bpy.data.images.remove(out_img)
+if rough_node:
+    rp = img_px(rough_node.image); rp[..., :3] = 0.85 + 0.10 * rp[..., :3]
+    ro = bpy.data.images.new("Temple_Roughness_matte", rough_node.image.size[0], rough_node.image.size[1], alpha=False, float_buffer=False)
+    ro.pixels.foreach_set(rp.astype(np.float32).ravel()); ro.file_format = "JPEG"
+    ro.save(filepath=bpy.path.abspath(rough_node.image.filepath_raw), quality=90); rough_node.image.reload(); bpy.data.images.remove(ro)
+    report["facade_roughness"] = "remapped to 0.85-0.95"
+for m in bpy.data.materials:
+    if m.use_nodes and "Principled BSDF" in m.node_tree.nodes:
+        b = m.node_tree.nodes["Principled BSDF"]
+        if not b.inputs["Roughness"].links: b.inputs["Roughness"].default_value = max(b.inputs["Roughness"].default_value, 0.88)
+        if not b.inputs["Metallic"].links: b.inputs["Metallic"].default_value = 0.0
+log("facade graded", report.get("facade_grade"))
+# the same grade for the statue atlas and the passage liner texture (the interior and rock atlases
+# are graded in 02), written beside the originals so re-running this step never grades twice
+report["also_graded"] = []
+for img in list(bpy.data.images):
+    if img.name.split(".")[0] not in ("Statues_BaseColor", "InteriorSandstone") or not img.filepath_raw or img.users == 0: continue
+    gp = img_px(img); gp[..., :3] = sg.grade(gp[..., :3])
+    root, ext = os.path.splitext(bpy.path.abspath(img.filepath_raw))
+    gpath = root + "_graded" + (".jpg" if ext.lower() in (".jpg", ".jpeg") else ".png")
+    gi = bpy.data.images.new(img.name + "_graded", img.size[0], img.size[1], alpha=False, float_buffer=False)
+    gi.pixels.foreach_set(gp.astype(np.float32).ravel()); gi.file_format = "JPEG" if gpath.endswith(".jpg") else "PNG"
+    gi.save(filepath=gpath, quality=92); bpy.data.images.remove(gi)
+    img.filepath = gpath; img.reload()
+    report["also_graded"].append(img.name)
+log("also graded", report["also_graded"])
+
 # ---------------------------------------------------------------- 4. orient, scale, origin
-P = all_pts(); lo, hi = P.min(0), P.max(0)
+P = all_pts(ADDED_ROCK); lo, hi = P.min(0), P.max(0)
 length = float(hi[0] - lo[0]); s = TARGET_LEN / length
 R = Matrix.Rotation(math.radians(90.0), 4, "Z")          # facade -X  ->  -Y (glTF +Z, toward the viewer)
 centre = Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, lo[2]))
@@ -205,7 +268,7 @@ M = Matrix.Scale(s, 4) @ R @ Matrix.Translation(-centre)
 for o in bpy.data.objects:
     if o.type == "MESH":
         o.data.transform(M @ o.matrix_world); o.matrix_world = Matrix.Identity(4); o.data.update()
-P = all_pts(); lo, hi = P.min(0), P.max(0)
+P = all_pts(ADDED_ROCK); lo, hi = P.min(0), P.max(0)
 report["final_size_m_xyz"] = [round(float(v), 4) for v in (hi - lo)]
 report["final_bbox_min"] = [round(float(v), 4) for v in lo]; report["final_bbox_max"] = [round(float(v), 4) for v in hi]
 report["scale_factor"] = round(s, 5)
@@ -218,6 +281,21 @@ d_final = {"door_centre_xyz": [0.0, round((sill - floor_z) * s, 4), None]}
 report["doorway_final_m"] = {"y_sill": round(float((sill - floor_z) * s), 4), "y_top": round(float(door["top_z_above_floor"] * s), 4), "width": round(float(door["width"] * s), 4),
                              "z_facade_wall": round(float(-(wall_x - centre.x) * s), 4)}
 log("scaled", report["final_size_m_xyz"], "scale", report["scale_factor"])
+# ray check (final frame, Lens temple-local cm -> Blender final: x = lx/100, y = -lz/100, z = ly/100):
+# the sun's ray from far outside along the dawn line, through the doorway entry, to the statues
+def lens_to_final(p): return Vector((p[0] / 100.0, -p[2] / 100.0, p[1] / 100.0))
+entry = Vector((0.0, 4.0, 23.7))
+cs = [Vector(report["statues_final_m"][n]) for n in ("Statue_AmunRa", "Statue_Ramesses", "Statue_RaHorakhty")]
+target = Vector((sum(c.x for c in cs) / 3 * 100, 1.7 + 2.2, -sum(c.y for c in cs) / 3 * 100 + 0.7))
+d_in = (target - entry).normalized(); sun = entry - d_in * 75.0
+dg = bpy.context.evaluated_depsgraph_get()
+def cast(a, b):
+    A, B = lens_to_final(a), lens_to_final(b); d = B - A; L = d.length; d.normalize()
+    hit, loc, nrm, fi, obj, mat = scene.ray_cast(dg, A + d * 1e-4, d, distance=L - 1e-4)
+    return {"hit": obj.name if hit else None, "at_cm": round((loc - A).length * 100, 2) if hit else None, "length_cm": round(L * 100, 2)}
+report["ray_check"] = {"entry_cm": list(entry), "target_cm": [round(v, 2) for v in target], "sun_cm": [round(v, 2) for v in sun],
+                       "sun_to_entry": cast(sun, entry), "entry_to_target": cast(entry, target)}
+log("ray check", report["ray_check"])
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(builddir, "optimised.blend"))
 
 # ---------------------------------------------------------------- 5. export GLB

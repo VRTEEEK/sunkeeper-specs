@@ -3,44 +3,47 @@
  "target_triangles": 85000,
  "before": {
   "Facade": 459266,
-  "Interior_Pillars": 432,
-  "Interior_Shell": 216,
-  "Statue_AmunRa": 60,
-  "Statue_Ptah": 60,
-  "Statue_RaHorakhty": 60,
-  "Statue_Ramesses": 60
+  "Facade_Backing": 416,
+  "Interior_Pillars": 392,
+  "Interior_Shell": 124,
+  "Mountain": 8922,
+  "Statue_AmunRa": 4200,
+  "Statue_Ptah": 4200,
+  "Statue_RaHorakhty": 4200,
+  "Statue_Ramesses": 4200
  },
  "cull": {
   "underside": 2672,
   "back_face_covered_by_interior": 3312,
-  "buried_backface_hits": 1873,
-  "total_removed": 7651
+  "buried_backface_hits": 3341,
+  "total_removed": 9119
  },
- "after_cull": 451385,
+ "after_cull": 449912,
  "colossi_region_tris_before": [
   190809,
-  260321
+  258853
  ],
  "decimate_history": [
   {
    "pass": "A",
    "region": [
     189937,
-    36326
+    36324
    ]
   },
   {
    "pass": "B",
    "region": [
     49495,
-    35614
+    35612
    ]
   }
  ],
  "decimate": {
-  "facade_tris": 85109,
-  "interior_tris": 888,
-  "total_tris": 85997,
+  "facade_tris": 85107,
+  "interior_tris": 9854,
+  "statue_tris": 16800,
+  "total_tris": 111761,
   "targets": {
    "protected": 48784,
    "rest": 35328
@@ -48,7 +51,7 @@
  },
  "colossi_region_tris_after": [
   49495,
-  35614
+  35612
  ],
  "textures": {
   "base_color": [
@@ -65,18 +68,27 @@
    2048
   ]
  },
+ "facade_grade": {
+  "mean_luminance_after": 0.372,
+  "ao_mean": 0.199
+ },
+ "facade_roughness": "remapped to 0.85-0.95",
+ "also_graded": [
+  "InteriorSandstone.001",
+  "Statues_BaseColor"
+ ],
  "final_size_m_xyz": [
-  0.3789,
+  0.379,
   0.78,
   0.2498
  ],
  "final_bbox_min": [
-  -0.1894,
+  -0.1895,
   -0.39,
   0.0
  ],
  "final_bbox_max": [
-  0.1894,
+  0.1895,
   0.39,
   0.2498
  ],
@@ -84,23 +96,23 @@
  "statues_final_m": {
   "Statue_Ptah": [
    -0.0265,
-   0.3507,
-   0.0429
+   0.3525,
+   0.0394
   ],
   "Statue_AmunRa": [
    -0.0083,
-   0.3507,
-   0.0429
+   0.352,
+   0.0388
   ],
   "Statue_Ramesses": [
    0.0099,
-   0.3507,
-   0.0429
+   0.3519,
+   0.0383
   ],
   "Statue_RaHorakhty": [
    0.0281,
-   0.3507,
-   0.0429
+   0.352,
+   0.0386
   ]
  },
  "doorway_final_m": {
@@ -109,15 +121,42 @@
   "width": 0.0211,
   "z_facade_wall": 0.2361
  },
+ "ray_check": {
+  "entry_cm": [
+   0.0,
+   4.0,
+   23.700000762939453
+  ],
+  "target_cm": [
+   0.99,
+   3.9,
+   -34.5
+  ],
+  "sun_cm": [
+   -1.28,
+   4.13,
+   98.69
+  ],
+  "sun_to_entry": {
+   "hit": null,
+   "at_cm": null,
+   "length_cm": 75.0
+  },
+  "entry_to_target": {
+   "hit": null,
+   "at_cm": null,
+   "length_cm": 58.21
+  }
+ },
  "glb": {
   "path": "/Users/mo/src/Sunkeeper/Assets/Temple/Temple.glb",
-  "bytes": 10584876,
-  "mb": 10.58
+  "bytes": 14223468,
+  "mb": 14.22
  },
  "verify_reimport": {
   "objects": {
    "Facade": {
-    "tris": 85109,
+    "tris": 85107,
     "materials": [
      "mat0",
      "InteriorSandstone"
@@ -133,10 +172,26 @@
      0.25
     ]
    },
-   "Interior_Pillars": {
-    "tris": 432,
+   "Facade_Backing": {
+    "tris": 416,
     "materials": [
-     "InteriorSandstone"
+     "RockStone"
+    ],
+    "bbox_min": [
+     -0.192,
+     -0.182,
+     0.0
+    ],
+    "bbox_max": [
+     0.193,
+     -0.176,
+     0.249
+    ]
+   },
+   "Interior_Pillars": {
+    "tris": 392,
+    "materials": [
+     "InteriorStone"
     ],
     "bbox_min": [
      -0.05,
@@ -150,23 +205,39 @@
     ]
    },
    "Interior_Shell": {
-    "tris": 216,
+    "tris": 124,
     "materials": [
-     "InteriorSandstone"
+     "InteriorStone"
     ],
     "bbox_min": [
+     -0.1,
      -0.177,
-     -0.182,
      0.0
     ],
     "bbox_max": [
-     0.179,
+     0.102,
      0.39,
-     0.138
+     0.083
+    ]
+   },
+   "Mountain": {
+    "tris": 8922,
+    "materials": [
+     "RockStone"
+    ],
+    "bbox_min": [
+     -0.21,
+     -0.177,
+     0.0
+    ],
+    "bbox_max": [
+     0.211,
+     0.487,
+     0.083
     ]
    },
    "Statue_AmunRa": {
-    "tris": 60,
+    "tris": 4200,
     "materials": [
      "Statue_AmunRa"
     ],
@@ -176,29 +247,29 @@
      0.017
     ],
     "bbox_max": [
-     -0.0,
+     -0.001,
      0.359,
-     0.066
+     0.074
     ]
    },
    "Statue_Ptah": {
-    "tris": 60,
+    "tris": 4200,
     "materials": [
      "Statue_Ptah"
     ],
     "bbox_min": [
-     -0.035,
+     -0.034,
      0.344,
      0.017
     ],
     "bbox_max": [
-     -0.018,
+     -0.019,
      0.359,
-     0.066
+     0.054
     ]
    },
    "Statue_RaHorakhty": {
-    "tris": 60,
+    "tris": 4200,
     "materials": [
      "Statue_RaHorakhty"
     ],
@@ -210,11 +281,11 @@
     "bbox_max": [
      0.036,
      0.359,
-     0.066
+     0.062
     ]
    },
    "Statue_Ramesses": {
-    "tris": 60,
+    "tris": 4200,
     "materials": [
      "Statue_Ramesses"
     ],
@@ -226,14 +297,38 @@
     "bbox_max": [
      0.018,
      0.359,
-     0.066
+     0.058
     ]
    }
   },
   "images": {
-   "InteriorSandstone": [
+   "InteriorSandstone_graded": [
     512,
     512
+   ],
+   "InteriorStone_BaseColor": [
+    2048,
+    2048
+   ],
+   "InteriorStone_Normal": [
+    2048,
+    2048
+   ],
+   "RockStone_BaseColor": [
+    2048,
+    2048
+   ],
+   "RockStone_Normal": [
+    2048,
+    2048
+   ],
+   "Statues_BaseColor_graded": [
+    1024,
+    1024
+   ],
+   "Statues_Normal": [
+    1024,
+    1024
    ],
    "Temple_BaseColor": [
     2048,
@@ -248,6 +343,6 @@
     2048
    ]
   },
-  "total_tris": 85997
+  "total_tris": 111761
  }
 }

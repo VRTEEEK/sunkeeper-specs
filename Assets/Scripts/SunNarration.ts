@@ -107,6 +107,7 @@ export class SunNarration extends BaseScriptComponent {
   private phraseEnds: number[] = [];
   private awayTimer = 0;
   private fadeTimer = 0;
+  private buttonPending = false;
 
   onAwake() {
     this.createEvent('OnStartEvent').bind(() => this.start());
@@ -124,7 +125,10 @@ export class SunNarration extends BaseScriptComponent {
       this.buttonRoot = this.tryAgain.getSceneObject();
       this.buttonLabel = this.findText(this.buttonRoot);
       if (this.buttonLabel) this.buttonLabel.text = 'Try again';
-      this.buttonRoot.enabled = false;
+      // Stay enabled for the first frame so the UI Kit button runs its own start (it builds its
+      // Interactable and collider there); hidden in update(). Disabled before that, it would only
+      // initialise when first shown and ignore pinches for its first few seconds.
+      this.buttonPending = true;
       this.tryAgain.onTriggerUp.add(() => this.onTryAgain());
     } else {
       print('SunNarration: no Try again button assigned');
@@ -170,6 +174,10 @@ export class SunNarration extends BaseScriptComponent {
   }
 
   private update() {
+    if (this.buttonPending && this.buttonRoot) {
+      this.buttonPending = false;
+      if (this.phase !== 'closing') this.buttonRoot.enabled = false;
+    }
     if (this.phase === 'idle') return;
     const dt = getDeltaTime();
     const head = this.camera.getTransform().getWorldPosition();

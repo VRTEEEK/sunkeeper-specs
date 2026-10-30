@@ -1,24 +1,30 @@
 - !<AssetImportMetadata/8afd65d4-e5ab-47e7-b3aa-5fe26517138c>
   ImportedAssetIds:
     .hidden/InteriorSandstone: !<reference> 4f840189-9a06-48a2-9e6a-cf30232fc30e
-    0272a8cb830947fc: !<reference> 30a24073-7cd2-4353-9e5f-c47ac51507e9
+    0795af774b0de118: !<reference> 6ca02e93-ee34-4564-adcc-950f62e2f6d5
     0c44aa6cc34e8404: !<reference> 789e31aa-1e78-48ca-8f63-060865cbea41
-    1d13fc3bf3477494: !<reference> ab887b14-0964-45e1-b3f1-09a509e1469f
+    1ae3f383209b1e68: !<reference> 458078a1-dd71-4d74-bf17-5fb52cf070a6
     22d8f4949e8fdf9b: !<reference> 14a2333e-5006-41f3-bee5-851d96e5617c
     25b51c64e2d9cd98: !<reference> 361aa349-80fc-466c-9142-807d0492b50b
     26ba073d67b9d0dd: !<reference> 8cb86408-7149-4d70-bd6a-d3812bebc1bb
     285f38781cddfc70: !<reference> f5bf6510-2ac3-4bbe-abdc-09716cb42056
+    2d4ff6b382b75dcc: !<reference> 13d452ea-c647-4a3c-b8fb-f078ccb54b3d
+    3d444764dcfcec33: !<reference> 4b16ee2f-470c-4ccb-99ec-22aca00692ba
     469f7410c3f2357f: !<reference> 94e62ca0-9f24-4ebe-9ed6-818cc7f4e88f
-    47cbd8cb18fca176: !<reference> 9637ff02-a27f-4d3c-8090-8ef96f89c208
     65552f4b09963300: !<reference> 3b4d7302-1d6c-46dc-91cf-1b94b094bf08
     657c264db4d38ac9: !<reference> 8c1b1345-c7ca-4cda-8984-c29a7ce3b2b8
     667e653274486bac: !<reference> 0983d965-57a3-48bb-a22f-694f9e0df8f7
-    734cfba0e9b8d58a: !<reference> 9ce06c09-5016-4f03-bb6c-24782bed0d09
+    819626f1f1cf94d3: !<reference> fae59473-6da6-4c82-b494-b178fc948036
     88ab437fd121cc69: !<reference> 6c8f99c2-d3b2-46b6-b12f-7ee070115521
     901dcdd00b60d238: !<reference> ea42a784-69c2-478d-b406-32a9f914047d
+    90cdc7a4e2ff815d: !<reference> 5455eae2-0331-4b3e-ba2a-ed41b363b390
     953eb331a95eaa92: !<reference> 439707ba-b763-46fd-bb68-7e4f5abefd0c
     Materials/InteriorSandstone: !<reference> 246ebecb-5d77-4487-bdc9-b6f35e4779ab
     Materials/InteriorSandstone|InteriorSandstone|GraphPassInfo: !<reference> a25491c8-5049-4fa8-8a28-770547ca9e6c
+    Materials/InteriorStone: !<reference> fa451f92-41a1-4705-b00f-93eed6206dd8
+    Materials/InteriorStone|InteriorStone|GraphPassInfo: !<reference> 6a657914-c33c-4210-8b43-ae0633b59eb4
+    Materials/RockStone: !<reference> 7c85cd0f-8419-43e9-9232-f2490836a83b
+    Materials/RockStone|RockStone|GraphPassInfo: !<reference> 249f4f91-fdbc-4096-aec9-95d3f834b9e9
     Materials/Statue_AmunRa: !<reference> 04b8ee6b-7067-45dd-998f-5d1adecc1c8b
     Materials/Statue_AmunRa|Statue_AmunRa|GraphPassInfo: !<reference> 383b6747-0862-4558-bccf-ea3188339492
     Materials/Statue_Ptah: !<reference> ac41e0bc-825a-49a9-ab09-229ec6837fd7
@@ -31,18 +37,24 @@
     Materials/mat0|mat0|GraphPassInfo: !<reference> 98972eb4-d2dc-4470-bec9-d5c36de95fb6
     Meshes/Facade: !<reference> 9a706e46-f148-4cce-a224-032e5464b57d
     Meshes/Facade1: !<reference> 11148c23-d2fe-4b3e-a193-77f25a7420e9
+    Meshes/Facade_Backing: !<reference> d1c15cf3-1365-459c-89ed-491fdb9aaa80
     Meshes/Interior_Pillars: !<reference> 60f5b98c-7146-4aad-9fe7-1bcbe5648ffd
     Meshes/Interior_Shell: !<reference> 3386ef0d-86c3-47f4-9015-ea530238d7e8
+    Meshes/Mountain: !<reference> fd99bb5c-a49e-4e1a-aa24-850910367485
     Meshes/Statue_AmunRa: !<reference> d4545aaa-fe72-463d-9e0d-9adbdc321e52
     Meshes/Statue_Ptah: !<reference> 04ba85a4-2550-4256-b963-3e3f39f469cc
     Meshes/Statue_RaHorakhty: !<reference> f1aba57b-6f6a-4e2f-bb68-27bdde1761cc
     Meshes/Statue_Ramesses: !<reference> 4e76ff10-bffa-448f-bb86-b0f47c1c61af
     Scene: !<reference> b54eedcd-b3e5-4370-9ce7-c481de761178
-    Textures/InteriorSandstone: !<reference> 221391c2-027e-4487-b4b7-07e683383b57
-    Textures/Statues_BaseColor: !<reference> d3aa56fd-fc29-4a93-9b14-edd1ef64882b
-    Textures/Statues_BaseColor1: !<reference> 2bc1b91c-a987-42fd-81a3-617ac0d90f4b
-    Textures/Statues_BaseColor2: !<reference> 5aa80c5c-924b-4d72-88a8-2d568f6bfe5d
-    Textures/Statues_BaseColor3: !<reference> 5b0afbca-d348-4c41-bb93-5bb8e03d760d
+    Textures/InteriorSandstone_graded: !<reference> d458ea12-57ab-4ac5-841f-bff74f0d32f4
+    Textures/InteriorStone_BaseColor: !<reference> 2e77baaf-1c0f-4959-a63c-18e0afd9ea67
+    Textures/InteriorStone_Normal: !<reference> 23c4aa4e-b7e1-4f26-91f3-29e502ac7f1e
+    Textures/RockStone_BaseColor: !<reference> 5b400f26-300e-4497-9672-130894b19e0f
+    Textures/RockStone_Normal: !<reference> 68a519f6-0dd4-493f-90ff-3e569217fb11
+    Textures/Statues_BaseColor_graded: !<reference> c10fb891-4e77-4e61-8324-c1c3f48496ea
+    Textures/Statues_BaseColor_graded1: !<reference> 2edbda33-9f80-4f35-b61b-9386388ff450
+    Textures/Statues_BaseColor_graded2: !<reference> efe8c526-f50a-48fe-98a7-fac5609fb09a
+    Textures/Statues_BaseColor_graded3: !<reference> 7885b423-8dd2-4e47-aa32-0001f5a6f3de
     Textures/Statues_Normal: !<reference> d9fcfe4f-5cf9-4bd5-ab4e-3cefc56ab1e6
     Textures/Statues_Normal1: !<reference> 3254d6b8-532b-436e-a37d-1c61775b43bb
     Textures/Statues_Normal2: !<reference> 64f85413-ef90-4824-a0f4-518d73ba9c89
@@ -50,9 +62,11 @@
     Textures/Temple_BaseColor: !<reference> e607a12f-2e12-4617-83fb-8d7946ca345d
     Textures/Temple_Normal: !<reference> 42b334d7-f169-4bd1-a2b5-aa13b72d0ba6
     Textures/Temple_Roughness: !<reference> f5f0230b-76e9-4196-9b62-6ca503b1082a
-    b4528b8859d1fb70: !<reference> 31eafbd7-3264-4ba8-839b-aad887a4e49a
-    c9ebae41e68c802a: !<reference> 9b39b28d-cf88-4ddf-b9c1-bad69a45b46d
-    e229b752f75d7495: !<reference> af025acd-ecf6-4f26-a0fc-b58ccef48368
+    c6e001e7ddc530c5: !<reference> 2b5c67c7-be0a-48c7-bae5-8d87b1d6857a
+    cbe513a64595b385: !<reference> 5ccceb13-76bf-47c7-85c4-8ea37d0280a1
+    d4c4c2c980bce05e: !<reference> c9fcc56e-5512-4a83-b609-73fb39455fef
+    dadc2f2cfafaf534: !<reference> 1b694433-4f09-4f1e-bad0-42d60867bc2b
+    e93cafa29b6cf3ce: !<reference> 37266991-b131-4c13-991d-57a7cba2e615
     fb486e955478fff5: !<reference> 1896bfb8-47e6-4ee6-85f5-ae9b1a647024
   ImporterName: GltfImporter
   PrimaryAsset: !<reference> b54eedcd-b3e5-4370-9ce7-c481de761178

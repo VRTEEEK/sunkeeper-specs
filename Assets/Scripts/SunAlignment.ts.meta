@@ -41,9 +41,12 @@
     debugHoldCaption: false
     debugLog: false
     entranceOffset: false
+    facadeTopDepthCm: false
+    facadeTopHalfWidthCm: false
     facadeTopOffset: false
     keyLight: false
     lightFacesBackwards: false
+    rayEntryOffset: false
     ring: false
     shaft: false
     sun: false
@@ -68,8 +71,11 @@
       captionArrow: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       viewingSpot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       centreOffset: !<Vec3> {x: 0.000000, y: 10.000000, z: 0.000000}
+      rayEntryOffset: !<Vec3> {x: 0.000000, y: 4.000000, z: 23.700001}
       entranceOffset: !<Vec3> {x: 0.000000, y: 1.000000, z: 39.000000}
       facadeTopOffset: !<Vec3> {x: 0.000000, y: 27.000000, z: 36.000000}
+      facadeTopDepthCm: !<float> 20.000000
+      facadeTopHalfWidthCm: !<float> 17.000000
       axisDirection: !<Vec3> {x: 0.000000, y: 0.000000, z: 1.000000}
       lightFacesBackwards: false
       debugLog: false
@@ -93,8 +99,11 @@
     - // @input SceneObject captionArrow
     - // @input SceneObject viewingSpot
     - '// @input vec3 centreOffset = "{0, 10, 0}"'
+    - '// @input vec3 rayEntryOffset = "{0, 4, 23.7}"'
     - '// @input vec3 entranceOffset = "{0, 1, 39}"'
     - '// @input vec3 facadeTopOffset = "{0, 27, 36}"'
+    - // @input float facadeTopDepthCm = 20
+    - // @input float facadeTopHalfWidthCm = 17
     - '// @input vec3 axisDirection = "{0, 0, 1}"'
     - // @input bool lightFacesBackwards
     - // @input bool debugLog

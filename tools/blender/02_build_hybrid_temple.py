@@ -28,6 +28,11 @@ facade.name = "Facade"; facade.data.name = "Facade"
 # bake the importer's Y-up -> Z-up object rotation into the mesh so local == world
 facade.data.transform(facade.matrix_world); facade.matrix_world = Matrix.Identity(4); facade.data.update()
 report = {}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.dont_write_bytecode = True
+# stone and rock swatches for the rear, sampled from the untouched Meshy facade texture (30 Oct 2026)
+import facade_swatch
+swatches = facade_swatch.build(scene, facade, os.path.join(builddir, "textures"), log=log)
+report["swatches"] = swatches["stats"]
 
 def verts_world(obj):
     me = obj.data
@@ -212,15 +217,15 @@ xe = x0 + DEPTH
 B("Interior_Shell", x0, xe, -OUT, OUT, floor_z, sill)                        # floor slab
 B("Interior_Shell", x0, xe, IN1, OUT, sill, sill + H)                         # side wall +Y (viewer's left)
 B("Interior_Shell", x0, xe, -OUT, -IN1, sill, sill + H)                       # side wall -Y
-B("Interior_Shell", xe - 0.06, xe, -OUT, OUT, sill, sill + H)                 # back wall
+B("Interior_Shell", xe - 0.06, xe, -IN1, IN1, sill, sill + H)                 # back wall, between the side walls (no coplanar overlap)
 # back plate (28 Oct 2026): a thin sandstone slab on the facade block's back, around the passage,
 # up to the old wall height. The Meshy mesh's back face has gaps there that the lowered walls no
 # longer hide; the facade's own back faces above this are kept.
 BP_TOP = sill + 0.30
 BP_HALF_W = 0.44
-B("Interior_Shell", xb - 0.01, x0, -BP_HALF_W, -pw, floor_z, BP_TOP)
-B("Interior_Shell", xb - 0.01, x0, pw, BP_HALF_W, floor_z, BP_TOP)
-B("Interior_Shell", xb - 0.01, x0, -pw, pw, pz1, BP_TOP)
+B("Back_Plate", xb - 0.01, x0, -BP_HALF_W, -pw, floor_z, BP_TOP)
+B("Back_Plate", xb - 0.01, x0, pw, BP_HALF_W, floor_z, BP_TOP)
+B("Back_Plate", xb - 0.01, x0, -pw, pw, pz1, BP_TOP)
 report["back_plate"] = {"top_above_floor": round(BP_TOP - floor_z, 4), "half_width": BP_HALF_W}
 # great hall x0+0.02 .. x0+0.62
 xh1a, xh1b = x0, x0 + 0.62
@@ -240,8 +245,8 @@ def partition(x0_, x1_, half_in, door_w, door_h, h):
     B("Interior_Shell", x0_, x1_, -door_w / 2, door_w / 2, sill + door_h, sill + h)
 partition(x0 + 0.62, x0 + 0.66, IN1, 0.10, 0.16, H)
 # rear section narrows: fill blocks from IN2 to IN1 on both sides, x0+0.66 .. xe
-B("Interior_Shell", x0 + 0.66, xe, IN2, IN1, sill, sill + H)
-B("Interior_Shell", x0 + 0.66, xe, -IN1, -IN2, sill, sill + H)
+B("Interior_Shell", x0 + 0.66, xe - 0.06, IN2, IN1, sill, sill + H)          # stop at the back wall (no coplanar overlap)
+B("Interior_Shell", x0 + 0.66, xe - 0.06, -IN1, -IN2, sill, sill + H)
 # second hall x0+0.66 .. x0+0.98, four square pillars
 for sgn in (1, -1):
     for px_ in (x0 + 0.76, x0 + 0.88):
@@ -286,11 +291,25 @@ def build(name, blist, mat):
 objs = {}
 for name, blist in boxes.items():
     objs[name] = build(name, blist, mat_interior)
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.dont_write_bytecode = True
 import sanctuary_statues
 statue_objs, report["statues"] = sanctuary_statues.build(
     scene, {n: (STATUE_X, cy + statue_y[n]) for n in order}, sill, tex_img, os.path.join(builddir, "textures"), log=log)
 objs.update(statue_objs)
+import interior_surfaces
+# one cohesive temple: the cliff it is cut into, sliced by a single horizontal section plane at
+# the great hall's wall height, plus a rock skin just behind the facade's back (30 Oct 2026).
+# Every rear surface takes its albedo from the facade swatches and the facade's colour grade.
+H_CUT = sill + H
+objs["Mountain"] = interior_surfaces.build_mountain(scene, cy, x0, xe, OUT, floor_z, H_CUT)
+objs["Facade_Backing"] = interior_surfaces.build_facade_backing(scene, facade, xb, x0 + 0.0015, floor_z, (cy - pw, cy + pw, pz1))
+report["join"] = {"facade_back_x": round(xb, 4), "back_plate_x": [round(xb - 0.01, 4), round(x0, 4)],
+                  "backing_x": round(x0 + 0.0015, 4), "mountain_front_x": round(x0, 4), "section_z": round(H_CUT, 4),
+                  "back_plate_top_z": round(BP_TOP, 4)}
+report["interior_surfaces"] = interior_surfaces.build(
+    scene, {k: objs[k] for k in ("Interior_Shell", "Interior_Pillars")},
+    {k: objs[k] for k in ("Mountain", "Facade_Backing", "Back_Plate")}, swatches,
+    cy, x0, xe, IN1, floor_z, sill, H, os.path.join(builddir, "textures"), log=log, h_cut=H_CUT)
+objs.pop("Back_Plate")
 # UVs for the facade's new (fill + passage) faces: box-project only loops of faces in the interior slot or with zero UVs
 fme = facade.data
 if fme.uv_layers:
