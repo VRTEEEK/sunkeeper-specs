@@ -31,6 +31,8 @@
     axisDirection: false
     camera: false
     caption: false
+    captionArrow: false
+    captionArrowOffset: false
     captionHalfHeightCm: false
     captionHalfWidthCm: false
     captionLiftCm: false
@@ -39,12 +41,14 @@
     debugHoldCaption: false
     debugLog: false
     entranceOffset: false
+    facadeTopOffset: false
     keyLight: false
     lightFacesBackwards: false
     ring: false
     shaft: false
     sun: false
     temple: false
+    viewingSpot: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -61,13 +65,17 @@
       ring: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       shaft: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       caption: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      captionArrow: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      viewingSpot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       centreOffset: !<Vec3> {x: 0.000000, y: 10.000000, z: 0.000000}
       entranceOffset: !<Vec3> {x: 0.000000, y: 1.000000, z: 39.000000}
+      facadeTopOffset: !<Vec3> {x: 0.000000, y: 27.000000, z: 36.000000}
       axisDirection: !<Vec3> {x: 0.000000, y: 0.000000, z: 1.000000}
       lightFacesBackwards: false
       debugLog: false
-      captionLiftCm: !<float> 9.000000
-      captionTowardViewerCm: !<float> 12.000000
+      captionLiftCm: !<float> -12.000000
+      captionTowardViewerCm: !<float> 14.000000
+      captionArrowOffset: !<float> 6.400000
       captionHalfWidthCm: !<float> 15.000000
       captionHalfHeightCm: !<float> 4.000000
       debugHoldCaption: false
@@ -82,13 +90,17 @@
     - // @input SceneObject ring
     - // @input SceneObject shaft
     - // @input SceneObject caption
+    - // @input SceneObject captionArrow
+    - // @input SceneObject viewingSpot
     - '// @input vec3 centreOffset = "{0, 10, 0}"'
     - '// @input vec3 entranceOffset = "{0, 1, 39}"'
+    - '// @input vec3 facadeTopOffset = "{0, 27, 36}"'
     - '// @input vec3 axisDirection = "{0, 0, 1}"'
     - // @input bool lightFacesBackwards
     - // @input bool debugLog
-    - // @input float captionLiftCm = 9
-    - // @input float captionTowardViewerCm = 12
+    - // @input float captionLiftCm = -12
+    - // @input float captionTowardViewerCm = 14
+    - // @input float captionArrowOffset = 6.4
     - // @input float captionHalfWidthCm = 15
     - // @input float captionHalfHeightCm = 4
     - // @input bool debugHoldCaption

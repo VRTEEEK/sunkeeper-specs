@@ -126,7 +126,6 @@ def make_material(name, image):
     m.diffuse_color = (float(mean_rgb[0]), float(mean_rgb[1]), float(mean_rgb[2]), 1.0)
     return m
 mat_interior = make_material("InteriorSandstone", tex_img)
-statue_mats = {n: make_material(n, tex_img) for n in ("Statue_Ptah", "Statue_AmunRa", "Statue_Ramesses", "Statue_RaHorakhty")}
 
 # ---------------------------------------------------------------- 3. cut the Meshy interior off, bore the passage
 me = facade.data
@@ -254,13 +253,7 @@ partition(x0 + 1.16, x0 + 1.19, IN2, 0.14, 0.14, H2)
 STATUE_X = xe - 0.06 - 0.035
 order = ["Statue_Ptah", "Statue_AmunRa", "Statue_Ramesses", "Statue_RaHorakhty"]   # left -> right from the entrance = +Y -> -Y
 statue_y = {n: 0.0675 - i * 0.045 for i, n in enumerate(order)}
-for n in order:
-    y = statue_y[n]; sx = STATUE_X
-    B(n, sx - 0.0175, sx + 0.0175, y - 0.02, y + 0.02, sill, sill + 0.035)                 # seat
-    B(n, sx - 0.011, sx + 0.011, y - 0.015, y + 0.015, sill + 0.035, sill + 0.08)           # torso
-    B(n, sx - 0.0175, sx - 0.0025, y - 0.013, y + 0.013, sill + 0.035, sill + 0.055)        # lap / knees toward -X
-    B(n, sx - 0.01, sx + 0.01, y - 0.01, y + 0.01, sill + 0.08, sill + 0.10)                # head
-    B(n, sx - 0.007, sx + 0.007, y - 0.007, y + 0.007, sill + 0.10, sill + 0.12)            # crown
+# the statues themselves are sculpted, decimated and baked in sanctuary_statues.py (30 Oct 2026)
 
 TILES = 3.0  # texture repeats per metre
 def box_uv_project(me_, scale=TILES):
@@ -292,7 +285,12 @@ def build(name, blist, mat):
     o = bpy.data.objects.new(name, m); scene.collection.objects.link(o); return o
 objs = {}
 for name, blist in boxes.items():
-    objs[name] = build(name, blist, statue_mats.get(name, mat_interior))
+    objs[name] = build(name, blist, mat_interior)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.dont_write_bytecode = True
+import sanctuary_statues
+statue_objs, report["statues"] = sanctuary_statues.build(
+    scene, {n: (STATUE_X, cy + statue_y[n]) for n in order}, sill, tex_img, os.path.join(builddir, "textures"), log=log)
+objs.update(statue_objs)
 # UVs for the facade's new (fill + passage) faces: box-project only loops of faces in the interior slot or with zero UVs
 fme = facade.data
 if fme.uv_layers:
@@ -377,6 +375,7 @@ render("hybrid_three_quarter", (lo[0] - L * 0.7, lo[1] - L * 0.7, hi[2] + L * 0.
 render("hybrid_three_quarter_other_side", (lo[0] - L * 0.7, hi[1] + L * 0.7, hi[2] + L * 0.6), (C.x, C.y, C.z))
 render("hybrid_interior_closeup", (x0 + 0.25, cy - 0.70, sill + 0.80), (x0 + 0.75, cy, sill + 0.05), lens=40)
 render("hybrid_sanctuary_closeup", (x0 + 1.17, cy + 0.02, sill + 0.30), (STATUE_X, cy, sill + 0.05), lens=35)
+render("hybrid_statues_closeup", (STATUE_X - 0.36, cy, sill + 0.085), (STATUE_X, cy, sill + 0.074), lens=60)
 beam.hide_render = False
 render("hybrid_top_beam_path", (C.x, C.y, hi[2] + 2), (C.x, C.y, C.z), ortho=L * 1.06)
 render("hybrid_beam_three_quarter", (lo[0] - L * 0.5, lo[1] - L * 0.6, hi[2] + L * 0.5), (C.x + 0.1, C.y, C.z))

@@ -33,16 +33,20 @@
     Meshes/Facade1: !<reference> 11148c23-d2fe-4b3e-a193-77f25a7420e9
     Meshes/Interior_Pillars: !<reference> 60f5b98c-7146-4aad-9fe7-1bcbe5648ffd
     Meshes/Interior_Shell: !<reference> 3386ef0d-86c3-47f4-9015-ea530238d7e8
-    Meshes/Statue_AmunRa: !<reference> e4e48045-cee5-47b1-9d2f-741283180d22
-    Meshes/Statue_Ptah: !<reference> 510688b9-dfab-4ec2-b89c-ae8744031b18
-    Meshes/Statue_RaHorakhty: !<reference> 0cd46160-5ce6-4346-a1f0-e3c157167f52
-    Meshes/Statue_Ramesses: !<reference> 0734f038-4882-416a-8bab-e0c9887c8930
+    Meshes/Statue_AmunRa: !<reference> d4545aaa-fe72-463d-9e0d-9adbdc321e52
+    Meshes/Statue_Ptah: !<reference> 04ba85a4-2550-4256-b963-3e3f39f469cc
+    Meshes/Statue_RaHorakhty: !<reference> f1aba57b-6f6a-4e2f-bb68-27bdde1761cc
+    Meshes/Statue_Ramesses: !<reference> 4e76ff10-bffa-448f-bb86-b0f47c1c61af
     Scene: !<reference> b54eedcd-b3e5-4370-9ce7-c481de761178
     Textures/InteriorSandstone: !<reference> 221391c2-027e-4487-b4b7-07e683383b57
-    Textures/InteriorSandstone1: !<reference> 3d763f0a-1262-4aaf-82e9-9b1dccfa1b4e
-    Textures/InteriorSandstone2: !<reference> b303a106-2c65-40f1-a74a-91eecf0dca09
-    Textures/InteriorSandstone3: !<reference> 236e1027-8e94-4492-bb15-d333c66c486d
-    Textures/InteriorSandstone4: !<reference> 433173ad-fda0-4ab3-ba50-3966d2a59fcb
+    Textures/Statues_BaseColor: !<reference> d3aa56fd-fc29-4a93-9b14-edd1ef64882b
+    Textures/Statues_BaseColor1: !<reference> 2bc1b91c-a987-42fd-81a3-617ac0d90f4b
+    Textures/Statues_BaseColor2: !<reference> 5aa80c5c-924b-4d72-88a8-2d568f6bfe5d
+    Textures/Statues_BaseColor3: !<reference> 5b0afbca-d348-4c41-bb93-5bb8e03d760d
+    Textures/Statues_Normal: !<reference> d9fcfe4f-5cf9-4bd5-ab4e-3cefc56ab1e6
+    Textures/Statues_Normal1: !<reference> 3254d6b8-532b-436e-a37d-1c61775b43bb
+    Textures/Statues_Normal2: !<reference> 64f85413-ef90-4824-a0f4-518d73ba9c89
+    Textures/Statues_Normal3: !<reference> 11f79efc-e5d5-40b7-9b1c-c23c1a006762
     Textures/Temple_BaseColor: !<reference> e607a12f-2e12-4617-83fb-8d7946ca345d
     Textures/Temple_Normal: !<reference> 42b334d7-f169-4bd1-a2b5-aa13b72d0ba6
     Textures/Temple_Roughness: !<reference> f5f0230b-76e9-4196-9b62-6ca503b1082a

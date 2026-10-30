@@ -11,11 +11,18 @@
  * Two warm cues report closeness: a ring on the floor in front of the plinth, and a faint
  * shaft from the doorway towards the sun. Both scale smoothly with closeness; nothing flashes.
  *
+ * The visible disc is separate from the light. The key light stays on the temple -> viewer
+ * line; the disc keeps the same azimuth but is raised so it sits above the façade's top edge
+ * in the viewer's view (re-placed every frame, also after lock), never over the doorway. It
+ * dims as the score rises and settles to a soft glow at lock, so the shaft (disc -> doorway)
+ * and the reveal carry the moment.
+ *
  * When the viewer stays inside the tolerance for HOLD_SEC the sun locks, the caption shows
- * for CAPTION_SEC, and "ALIGNED" is logged. The caption appears where the viewer is looking at
- * that moment: just above the doorway, pulled towards the viewer, and kept inside the camera's
- * field of view (the SPECS display) while it is up, so standing up and turning never clips it. The beam travel and the statue lighting are
- * milestone 5: they subscribe through onAligned().
+ * for CAPTION_SEC, and "ALIGNED" is logged. The caption appears under the doorway, over the
+ * plinth's front face (darker than the lit façade, which matters on an additive display), with
+ * a warm arrow on the side of the viewing spot pointing to it. It is kept inside the camera's
+ * field of view (the SPECS display) while it is up, so standing up and turning never clips it.
+ * The beam travel and the statue lighting are milestone 5: they subscribe through onAligned().
  */
 
 // ---------------------------------------------------------------------------
@@ -35,8 +42,20 @@ const HOLD_SEC = 1.0;
 /** How long the lock caption stays up (long enough to read while standing up). */
 const CAPTION_SEC = 4.0;
 
-/** Distance of the sun disc from the temple centre. */
+/** Distance of the sun (the light) from the temple centre. */
 const SUN_DISTANCE_CM = 60;
+
+/** The visible disc is raised this much above the light's direction, seen from the viewer. */
+const DISC_RAISE_DEG = 12;
+/** Minimum gap between the disc's lower edge and the façade's top edge, seen from the viewer. */
+const DISC_CLEAR_DEG = 3;
+/** Disc size relative to the authored Sun scale. */
+const DISC_SCALE = 0.75;
+/** Disc brightness when the score reaches 1 (before lock) and once locked. */
+const DISC_ALIGNED_GLOW = 0.4;
+const DISC_LOCKED_GLOW = 0.25;
+/** Easing rate for the disc brightness (per second). */
+const DISC_GLOW_SMOOTHING = 3;
 /** Easing rate for the sun (per second). Higher follows faster; 6 settles in ~0.5 s. */
 const SUN_SMOOTHING = 6;
 
@@ -50,7 +69,9 @@ const SHAFT_MAX_ALPHA = 0.45;
 /** Shaft width (cm) when fully aligned; it narrows as alignment is lost. */
 const SHAFT_WIDTH_CM = 4;
 
-const CAPTION_LOCKED = 'Now walk to the side and look inside.';
+const CAPTION_LOCKED = 'Now walk to the side\nand look inside.';
+/** Arrows on the lock caption point at most this far above or below horizontal. */
+const ARROW_MAX_TILT_DEG = 35;
 
 /** Safety margin (degrees) between the caption's edge and the edge of the field of view. */
 const CAPTION_FOV_MARGIN_DEG = 2.5;
@@ -84,6 +105,16 @@ export class SunAlignment extends BaseScriptComponent {
   /** The caption object (Component.Text on it). Hidden until lock. */
   @input caption: SceneObject;
 
+  /** The warm arrow beside the caption (a child of it, RenderMeshVisual; the mesh is built here). */
+  @input
+  @allowUndefined
+  captionArrow: SceneObject;
+
+  /** The viewing spot marker the arrow points to. */
+  @input
+  @allowUndefined
+  viewingSpot: SceneObject;
+
   /** Offset of the temple centre from the temple pivot, in cm along the temple's own axes. */
   @input('vec3', '{0, 10, 0}')
   centreOffset: vec3;
@@ -91,6 +122,10 @@ export class SunAlignment extends BaseScriptComponent {
   /** Offset of the entrance (doorway at floor level) from the temple pivot, in cm along the temple's own axes. */
   @input('vec3', '{0, 1, 39}')
   entranceOffset: vec3;
+
+  /** Centre of the façade's top edge, in cm along the temple's own axes (the disc stays above it). */
+  @input('vec3', '{0, 27, 36}')
+  facadeTopOffset: vec3;
 
   /** Direction the façade faces, in the temple's own axes (+Z = out of the doorway). */
   @input('vec3', '{0, 0, 1}')
@@ -104,13 +139,17 @@ export class SunAlignment extends BaseScriptComponent {
   @input
   debugLog: boolean = false;
 
-  /** Lock caption anchor: this far above the doorway (cm). */
+  /** Lock caption anchor: this far above the doorway floor (cm); negative is below, on the plinth front. */
   @input
-  captionLiftCm: number = 9;
+  captionLiftCm: number = -12;
 
-  /** Lock caption anchor: pulled this far from the doorway towards the viewer (cm). */
+  /** Lock caption anchor: pulled this far from the doorway towards the viewer, horizontally (cm). */
   @input
-  captionTowardViewerCm: number = 12;
+  captionTowardViewerCm: number = 14;
+
+  /** Arrow centre from the caption centre, in the caption's local units (beside the longer line). */
+  @input
+  captionArrowOffset: number = 6.4;
 
   /** Half the lock caption's on-screen size in cm (two lines of text at its scale), for the FOV clamp. */
   @input
@@ -123,6 +162,10 @@ export class SunAlignment extends BaseScriptComponent {
   debugHoldCaption: boolean = false;
 
   private sunPos: vec3 | null = null;
+  private discPos: vec3 | null = null;
+  private discPass: Pass | null = null;
+  private discBaseColor: vec4 | null = null;
+  private discGlow = 1;
   private holdTimer = 0;
   private captionTimer = 0;
   private locked = false;
@@ -189,8 +232,14 @@ export class SunAlignment extends BaseScriptComponent {
     this.shaftFade = this.clamp(shaft, 0, 1);
   }
 
+  /** Where the light comes from (on the temple -> viewer line). */
   getSunPosition(): vec3 {
     return this.sunPos ? this.sunPos : this.sun.getTransform().getWorldPosition();
+  }
+
+  /** Where the visible disc is drawn (raised above the façade in the viewer's view). */
+  getDiscPosition(): vec3 {
+    return this.discPos ? this.discPos : this.sun.getTransform().getWorldPosition();
   }
 
   /** Reset to the start state (used by Try again, milestone 6). */
@@ -215,7 +264,12 @@ export class SunAlignment extends BaseScriptComponent {
       print('SunAlignment: camera, temple and sun must be assigned');
     } else {
       this.cameraComp = this.camera.getComponent('Component.Camera') as Camera | null;
+      const st = this.sun.getTransform();
+      st.setLocalScale(st.getLocalScale().uniformScale(DISC_SCALE));
+      this.discPass = this.passOf(this.sun);
+      if (this.discPass) this.discBaseColor = this.discPass.baseColor as vec4;
     }
+    if (this.captionArrow) this.buildArrow(this.captionArrow);
     this.setAlpha(this.ringPass, RING_MIN_ALPHA);
     this.setShaftGlow(0);
   }
@@ -240,8 +294,13 @@ export class SunAlignment extends BaseScriptComponent {
         const k = 1 - Math.exp(-SUN_SMOOTHING * dt);
         this.sunPos = vec3.lerp(this.sunPos, target, k);
       }
-      this.sun.getTransform().setWorldPosition(this.sunPos);
       this.placeKeyLight(this.sunPos, centre);
+    }
+    // The disc is re-placed every frame, also after lock (the light stays frozen): standing up
+    // or walking round must never bring it down over the façade or the doorway.
+    if (this.sunPos) {
+      this.discPos = this.raisedDisc(head, this.sunPos);
+      this.sun.getTransform().setWorldPosition(this.discPos);
     }
 
     // --- Alignment measure ---
@@ -275,7 +334,10 @@ export class SunAlignment extends BaseScriptComponent {
     // --- Cues ---
     const cue = this.locked ? 1 : score;
     this.setAlpha(this.ringPass, (RING_MIN_ALPHA + (RING_MAX_ALPHA - RING_MIN_ALPHA) * cue) * this.ringFade);
-    this.placeShaft(entrance, this.getSunPosition(), cue * this.shaftFade);
+    this.placeShaft(entrance, this.getDiscPosition(), cue * this.shaftFade);
+    const glow = this.locked ? DISC_LOCKED_GLOW : 1 - (1 - DISC_ALIGNED_GLOW) * score;
+    this.discGlow += (glow - this.discGlow) * (1 - Math.exp(-DISC_GLOW_SMOOTHING * dt));
+    this.setDiscGlow(this.discGlow);
 
     // --- Lock ---
     if (!this.locked) {
@@ -289,6 +351,7 @@ export class SunAlignment extends BaseScriptComponent {
     if (this.caption && this.caption.enabled) {
       this.keepInView(this.caption, head);
       this.faceViewer(this.caption, head);
+      this.pointArrow();
     }
   }
 
@@ -297,13 +360,16 @@ export class SunAlignment extends BaseScriptComponent {
     this.captionTimer = CAPTION_SEC;
     if (this.captionText) this.captionText.text = CAPTION_LOCKED;
     if (this.caption) {
-      // Anchor in the gaze at the moment of lock: just above the doorway the viewer is
-      // looking along, pulled a little towards them so it floats in front of the façade.
+      // Anchor in the gaze at the moment of lock: under the doorway the viewer is looking
+      // along, pulled towards them so it floats just in front of the plinth's front face.
       const toHead = head.sub(entrance);
-      const pull = toHead.length > 0.001 ? toHead.normalize().uniformScale(this.captionTowardViewerCm) : vec3.zero();
+      const flat = new vec3(toHead.x, 0, toHead.z);
+      const pullDir = flat.length > 0.001 ? flat.normalize() : this.getAxis();
+      const pull = pullDir.uniformScale(this.captionTowardViewerCm);
       this.caption.getTransform().setWorldPosition(entrance.add(vec3.up().uniformScale(this.captionLiftCm)).add(pull));
       this.keepInView(this.caption, head);
       this.faceViewer(this.caption, head);
+      this.pointArrow();
       this.caption.enabled = true;
     }
     print('ALIGNED');
@@ -375,6 +441,73 @@ export class SunAlignment extends BaseScriptComponent {
     const ay = this.clamp(Math.atan2(v.dot(upv), z), -limV, limV);
     const p = head.add(look.uniformScale(z)).add(right.uniformScale(z * Math.tan(ax))).add(upv.uniformScale(z * Math.tan(ay)));
     if (p.distance(t.getWorldPosition()) > 0.01) t.setWorldPosition(p);
+  }
+
+  /**
+   * The visible disc: same azimuth and distance from the viewer as the light, raised by
+   * DISC_RAISE_DEG, and further if needed so its lower edge clears the façade's top edge.
+   */
+  private raisedDisc(head: vec3, light: vec3): vec3 {
+    const v = light.sub(head);
+    const d = v.length;
+    const flat = new vec3(v.x, 0, v.z);
+    const fl = flat.length;
+    if (d < 0.001 || fl < 0.001) return light;
+    const top = this.templePoint(this.facadeTopOffset).sub(head);
+    const topElev = Math.atan2(top.y, Math.sqrt(top.x * top.x + top.z * top.z));
+    const r = this.sun.getTransform().getWorldScale().x * 0.5;
+    const rad = Math.PI / 180;
+    const clear = topElev + Math.asin(Math.min(r / d, 1)) + DISC_CLEAR_DEG * rad;
+    const e = Math.max(Math.atan2(v.y, fl) + DISC_RAISE_DEG * rad, clear);
+    return head.add(flat.uniformScale((d * Math.cos(e)) / fl)).add(vec3.up().uniformScale(d * Math.sin(e)));
+  }
+
+  /** The disc material is additive, so brightness scales the base colour (as for the shaft). */
+  private setDiscGlow(k: number) {
+    if (!this.discPass || !this.discBaseColor) return;
+    const b = this.discBaseColor;
+    this.discPass.baseColor = new vec4(b.x * k, b.y * k, b.z * k, b.w);
+  }
+
+  /** A flat arrow pointing along local +X, one unit long, in the local XY plane. */
+  private buildArrow(obj: SceneObject) {
+    const rmv = obj.getComponent('Component.RenderMeshVisual') as RenderMeshVisual | null;
+    if (!rmv) return;
+    const mb = new MeshBuilder([
+      { name: 'position', components: 3 },
+      { name: 'normal', components: 3 },
+      { name: 'texture0', components: 2 },
+    ]);
+    mb.topology = MeshTopology.Triangles;
+    mb.indexType = MeshIndexType.UInt16;
+    const pts = [[0.5, 0], [-0.05, 0.4], [-0.05, -0.4], [-0.5, 0.13], [-0.05, 0.13], [-0.05, -0.13], [-0.5, -0.13]];
+    const verts: number[] = [];
+    for (const p of pts) verts.push(p[0], p[1], 0, 0, 0, 1, p[0] + 0.5, p[1] + 0.5);
+    mb.appendVerticesInterleaved(verts);
+    mb.appendIndices([0, 1, 2, 3, 6, 5, 3, 5, 4]);
+    mb.updateMesh();
+    rmv.mesh = mb.getMesh();
+  }
+
+  /**
+   * Puts the arrow beside the caption on the viewing spot's side and points it at the spot,
+   * tilted at most ARROW_MAX_TILT_DEG from horizontal so it reads as "walk this way".
+   */
+  private pointArrow() {
+    if (!this.captionArrow || !this.viewingSpot || !this.caption) return;
+    const ct = this.caption.getTransform();
+    const rot = ct.getWorldRotation();
+    const rel = this.viewingSpot.getTransform().getWorldPosition().sub(ct.getWorldPosition());
+    const rx = rel.dot(rot.multiplyVec3(new vec3(1, 0, 0)));
+    const ry = rel.dot(rot.multiplyVec3(new vec3(0, 1, 0)));
+    const side = rx < 0 ? -1 : 1;
+    const maxTilt = (ARROW_MAX_TILT_DEG * Math.PI) / 180;
+    const tilt = this.clamp(Math.atan2(ry, Math.abs(rx)), -maxTilt, maxTilt);
+    const angle = side > 0 ? tilt : Math.PI - tilt;
+    const at = this.captionArrow.getTransform();
+    const p = at.getLocalPosition();
+    at.setLocalPosition(new vec3(side * this.captionArrowOffset, p.y, p.z));
+    at.setLocalRotation(quat.angleAxis(angle, new vec3(0, 0, 1)));
   }
 
   private faceViewer(obj: SceneObject, head: vec3) {

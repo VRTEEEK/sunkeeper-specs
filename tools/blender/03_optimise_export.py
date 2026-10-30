@@ -17,6 +17,7 @@ argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 builddir, outdir, assetdir = [os.path.abspath(a) for a in argv[:3]]
 TARGET_LEN = float(argv[3]) if len(argv) > 3 else 0.78
 TARGET_TRIS = int(argv[4]) if len(argv) > 4 else 85000
+LEGACY_STATUE_TRIS = 240   # the old block statues' share of TARGET_TRIS
 os.makedirs(outdir, exist_ok=True); os.makedirs(assetdir, exist_ok=True)
 T0 = time.time()
 def log(*a): print("[export %5.1fs]" % (time.time() - T0), *a)
@@ -118,8 +119,11 @@ def decimate(obj, ratio, invert):
     dg2 = bpy.context.evaluated_depsgraph_get(); ev = obj.evaluated_get(dg2)
     new = bpy.data.meshes.new_from_object(ev, preserve_all_data_layers=True, depsgraph=dg2)
     obj.modifiers.clear(); old = obj.data; obj.data = new; new.name = "Facade"; bpy.data.meshes.remove(old)
-interior_tris = sum(tri_count(o) for o in bpy.data.objects if o.type == "MESH" and o is not facade)
-budget = TARGET_TRIS - interior_tris
+# the sanctuary statues are sculpted and decimated in 02 with their own budget (3-5k each), so they
+# do not eat into the facade's; 648 + 240 keeps the facade budget it had with the old block statues
+statue_tris = sum(tri_count(o) for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("Statue_"))
+interior_tris = sum(tri_count(o) for o in bpy.data.objects if o.type == "MESH" and o is not facade and not o.name.startswith("Statue_"))
+budget = TARGET_TRIS - interior_tris - LEGACY_STATUE_TRIS
 prot0, rest0 = region_counts(facade)
 report["colossi_region_tris_before"] = [prot0, rest0]
 prot_target = int(budget * 0.58); rest_target = budget - prot_target
@@ -138,7 +142,7 @@ for it in range(3):
     history.append({"pass": "B", "region": region_counts(facade)})
 got = tri_count(facade); total = got + interior_tris
 report["decimate_history"] = history
-report["decimate"] = {"facade_tris": got, "interior_tris": interior_tris, "total_tris": total, "targets": {"protected": prot_target, "rest": rest_target}}
+report["decimate"] = {"facade_tris": got, "interior_tris": interior_tris, "statue_tris": statue_tris, "total_tris": total + statue_tris, "targets": {"protected": prot_target, "rest": rest_target}}
 report["colossi_region_tris_after"] = list(region_counts(facade))
 if not (60000 <= total <= 100000):
     raise SystemExit("Decimation landed outside the budget: %d" % total)
